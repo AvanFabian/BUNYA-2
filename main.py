@@ -22,26 +22,68 @@ class Character(pygame.sprite.Sprite):
         self.speed = 5
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
         self.collision_box.center = self.rect.center  # Position the collision box at the center of the sprite
-        self.velocity = [0, 0]
-        self.gravity = 0.5
-        self.max_jump_height = 100
-        self.jump_speed = -10
-        self.is_jumping = False
-        self.jump_start_pos = None
 
+         # Set initial values for movement flags
+        self.move_up = False
+        self.move_down = False
+        self.move_left = False
+        self.move_right = False
+    
+    #moving of the character
     def move(self, dx, dy):
         self.rect.x += dx * self.speed
         self.rect.y += dy * self.speed
         self.collision_box.center = self.rect.center  # Update the position of the collision box to match the sprite
 
+    #display the character drawing
     def draw(self, surface):
         surface.blit(self.image, self.rect)
         pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2)
 
+    #Updating image of character
     def update_image(self, image_path):
         self.image = pygame.image.load("HIDROGEN.png").convert_alpha()
 
+    #Movement of character
+    def movement(self):
+        if  self.move_up:
+            print("ke atas")
+            self.update_image(character_images["up"])
+            self.move(0, -1)
+        elif self.move_down:
+            print("ke bawah")
+            self.update_image(character_images["down"])
+            self.move(0, 1)
+        elif self.move_right:
+            print("ke kanan")
+            self.update_image(character_images["right"])
+            self.move(1, 0)
+        elif self.move_left:
+            print("ke kiri")
+            self.update_image(character_images["left"])
+            self.move(-1, 0)
 
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.move_up = True
+            elif event.key == pygame.K_DOWN:
+                self.move_down = True
+            elif event.key == pygame.K_LEFT:
+                self.move_left = True
+            elif event.key == pygame.K_RIGHT:
+                self.move_right = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                self.move_up = False
+            elif event.key == pygame.K_DOWN:
+                self.move_down = False
+            elif event.key == pygame.K_LEFT:
+                self.move_left = False
+            elif event.key == pygame.K_RIGHT:
+                self.move_right = False
+        
+      
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -60,66 +102,19 @@ game_running = True
 while game_running:
     # Handle events
     for event in pygame.event.get():
+        #event when quit pressed
         if event.type == pygame.QUIT:
             game_running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                character.update_image(character_images["up"])
-                character.move(0, -1)
-            elif event.key == pygame.K_DOWN:
-                character.update_image(character_images["down"])
-                character.move(0, 1)
-            elif event.key == pygame.K_LEFT:
-                character.update_image(character_images["left"])
-                character.move(-1, 0)
-            elif event.key == pygame.K_RIGHT:
-                character.update_image(character_images["right"])
-                character.move(1, 0)
-            elif event.key == pygame.K_UP and event.key == pygame.K_LEFT:
-                character.update_image(character_images["up_left"])
-                character.move(-1, -1)
-            elif event.key == pygame.K_UP and event.key == pygame.K_RIGHT:
-                character.update_image(character_images["up_right"])
-                character.move(1, -1)
-            elif event.key == pygame.K_DOWN and event.key == pygame.K_LEFT:
-                character.update_image(character_images["down_left"])
-                character.move(-1, 1)
-            elif event.key == pygame.K_DOWN and event.key == pygame.K_RIGHT:
-                character.update_image(character_images["down_right"])
-                character.move(1, 1)
-            elif event.key == pygame.K_SPACE and not character.is_jumping:
-                character.is_jumping = True
-                character.velocity[1] = character.jump_speed
-        # Apply gravity to the player
-        character.velocity[1] += character.gravity
-
-        # Move the player
-        character.rect.move_ip(character.velocity)
-
-        # Check if the player hits the bottom of the screen
-        if player_rect.bottom >= window_size[1]:
-            player_rect.bottom = window_size[1]
-            player_velocity[1] = 0
-            player_is_jumping = False
-
-        # Limit the player's jump based on the maximum jump height
-        if player_is_jumping and player_rect.bottom <= player_jump_start_pos - player_max_jump_height:
-            player_is_jumping = False
-
-        # Handle keyboard input for movement
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            player_velocity[0] = -5
-        elif keys[pygame.K_RIGHT]:
-            player_velocity[0] = 5
+        #event when button pressed
         else:
-            player_velocity[0] = 0
+            character.handle_event(event)
+        
 
-    # Update the game state
-
+    character.movement()
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     all_sprites.draw(game_display)  # Draw all sprites
+    character.draw(game_display)
     # Update the display
     pygame.display.update()
 
