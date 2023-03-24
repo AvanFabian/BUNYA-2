@@ -28,7 +28,13 @@ class Character(pygame.sprite.Sprite):
         self.move_down = False
         self.move_left = False
         self.move_right = False
-    
+
+        #initial jump method
+        self.jump_size = 50  # Increase in height when jumping
+        self.jump_duration = 30  # Duration of jump in frames
+        self.jump_timer = 0  # Timer for tracking jump duration
+        self.jump_flag = False  # Flag to indicate whether the character is jumping
+
     #moving of the character
     def move(self, dx, dy):
         self.rect.x += dx * self.speed
@@ -73,6 +79,8 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = True
             elif event.key == pygame.K_RIGHT:
                 self.move_right = True
+            elif event.key == pygame.K_SPACE:
+                self.character.jump()  # Call the jump method when the up arrow is pressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 self.move_up = False
@@ -81,7 +89,32 @@ class Character(pygame.sprite.Sprite):
             elif event.key == pygame.K_LEFT:
                 self.move_left = False
             elif event.key == pygame.K_RIGHT:
-                self.move_right = False
+                self.move_right = False  
+
+    #Make character jump              
+    def jump(self):
+        if not self.jump_flag:
+            self.jump_flag = True
+            self.rect.height += self.jump_size  # Increase the height of the character
+            self.collision_box.height = self.rect.height  # Adjust the collision box
+            self.jump_timer = 0
+    
+    def update(self):
+        # ...
+        if self.jump_flag:
+            # Increase the jump timer
+            self.jump_timer += 1
+
+            # If the jump duration is over, disable the jump flag and reset the size of the character
+            if self.jump_timer >= self.jump_duration:
+                self.jump_flag = False
+                self.rect.height -= self.jump_size
+                self.collision_box.height = self.rect.height 
+
+    def detect_collisions(self):
+        if not self.character.jump_flag:  # Skip collision detection if the character is jumping
+            return 0
+    
         
       
 # Set up the game clock
