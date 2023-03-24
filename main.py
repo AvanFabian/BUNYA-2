@@ -106,7 +106,7 @@ while game_running:
         if event.type == pygame.QUIT:
             game_running = False
         #event when button pressed
-        else:
+        elif event:
             character.handle_event(event)
         
 
