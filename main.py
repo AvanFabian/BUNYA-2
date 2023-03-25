@@ -71,6 +71,7 @@ class Character(pygame.sprite.Sprite):
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
+        #Movement control
             if event.key == pygame.K_UP:
                 self.move_up = True
             elif event.key == pygame.K_DOWN:
@@ -79,8 +80,9 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = True
             elif event.key == pygame.K_RIGHT:
                 self.move_right = True
+        #Jump control
             elif event.key == pygame.K_SPACE:
-                self.character.jump()  # Call the jump method when the up arrow is pressed
+                self.jump() 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 self.move_up = False
@@ -100,11 +102,9 @@ class Character(pygame.sprite.Sprite):
             self.jump_timer = 0
     
     def update(self):
-        # ...
         if self.jump_flag:
             # Increase the jump timer
             self.jump_timer += 1
-
             # If the jump duration is over, disable the jump flag and reset the size of the character
             if self.jump_timer >= self.jump_duration:
                 self.jump_flag = False
@@ -115,8 +115,6 @@ class Character(pygame.sprite.Sprite):
         if not self.character.jump_flag:  # Skip collision detection if the character is jumping
             return 0
     
-        
-      
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -140,9 +138,9 @@ while game_running:
             game_running = False
         #event when button pressed
         elif event:
-            character.handle_event(event)
-        
+            character.handle_event(event)        
 
+    character.update()
     character.movement()
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
