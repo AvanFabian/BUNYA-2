@@ -70,6 +70,7 @@ class Character(pygame.sprite.Sprite):
             self.move(-1, 0)
 
     def handle_event(self, event):
+        #if button pressed
         if event.type == pygame.KEYDOWN:
         #Movement control
             if event.key == pygame.K_UP:
@@ -83,6 +84,7 @@ class Character(pygame.sprite.Sprite):
         #Jump control
             elif event.key == pygame.K_SPACE:
                 self.jump() 
+        #if button unpressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 self.move_up = False
@@ -99,6 +101,7 @@ class Character(pygame.sprite.Sprite):
             self.jump_flag = True
             self.rect.height += self.jump_size  # Increase the height of the character
             self.collision_box.height = self.rect.height  # Adjust the collision box
+            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))  # Adjust the image 
             self.jump_timer = 0
     
     def update(self):
@@ -109,7 +112,8 @@ class Character(pygame.sprite.Sprite):
             if self.jump_timer >= self.jump_duration:
                 self.jump_flag = False
                 self.rect.height -= self.jump_size
-                self.collision_box.height = self.rect.height 
+                self.collision_box.height = self.rect.height
+                self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height)) 
 
     def detect_collisions(self):
         if not self.character.jump_flag:  # Skip collision detection if the character is jumping
