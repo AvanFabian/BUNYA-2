@@ -116,9 +116,8 @@ class Character(pygame.sprite.Sprite):
                 self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height)) 
 
     def detect_collisions(self):
-        if not self.character.jump_flag:  # Skip collision detection if the character is jumping
+        if self.jump_flag:  # Skip collision detection if the character is jumping
             return 0
-    
 # Set up the game clock
 clock = pygame.time.Clock()
 
