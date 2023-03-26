@@ -118,6 +118,26 @@ class Character(pygame.sprite.Sprite):
     def detect_collisions(self):
         if self.jump_flag:  # Skip collision detection if the character is jumping
             return 0
+        # Check for collisions with obstacles
+        collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
+        # If there are collisions, update the color of the collision box
+        if collided_obstacles:
+            self.collision_box_color = (0, 0, 255)  # Blue
+            print("ketubruk")
+        else:
+            self.collision_box_color = (255, 0, 0)  # Red
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+        self.image = pygame.Surface((width, height))
+        self.image.fill((0, 255, 0))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        pass
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -127,6 +147,11 @@ character_images = dict(up="HIDROGEN.png", down="HIDROGEN.png", left="HIDROGEN.p
                         down_right="HIDROGEN.png")
 
 # Create the character sprite and add it to a sprite group
+# Obstacle
+obstacle = Obstacle(200, 300, 50, 100)
+obstacles = pygame.sprite.Group()
+obstacles.add(obstacle)
+#Character
 character = Character(display_width / 2, display_height / 2)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(character)
@@ -141,8 +166,10 @@ while game_running:
             game_running = False
         #event when button pressed
         elif event:
-            character.handle_event(event)        
+            character.handle_event(event)   
 
+    #Execute Method
+    character.detect_collisions()
     character.update()
     character.movement()
     # Draw the game world
