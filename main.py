@@ -44,7 +44,6 @@ class Character(pygame.sprite.Sprite):
     #display the character drawing
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-        pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2)
 
     #Updating image of character
     def update_image(self, image_path):
@@ -115,17 +114,19 @@ class Character(pygame.sprite.Sprite):
                 self.collision_box.height = self.rect.height
                 self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height)) 
 
-    def detect_collisions(self):
+    def detect_collisions(self, surface):
         if self.jump_flag:  # Skip collision detection if the character is jumping
+            print("loncat")
             return 0
         # Check for collisions with obstacles
         collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
+        surface.blit(self.image, self.rect)
         # If there are collisions, update the color of the collision box
         if collided_obstacles:
-            self.collision_box_color = (0, 0, 255)  # Blue
+            pygame.draw.rect(surface, (0,255,0,), self.collision_box, 2)  # Blue
             print("ketubruk")
         else:
-            self.collision_box_color = (255, 0, 0)  # Red
+            pygame.draw.rect(surface, (255,0,0,), self.collision_box, 2)  # Blue
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
@@ -169,12 +170,13 @@ while game_running:
             character.handle_event(event)   
 
     #Execute Method
-    character.detect_collisions()
+    character.detect_collisions(game_display)
     character.update()
     character.movement()
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     all_sprites.draw(game_display)  # Draw all sprites
+    obstacles.draw(game_display) #Draw all obstacle
     character.draw(game_display)
     # Update the display
     pygame.display.update()
