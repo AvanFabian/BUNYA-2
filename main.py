@@ -127,9 +127,6 @@ class Character(pygame.sprite.Sprite):
             print("loncat")
             return 0
 
-    
-         
-      
 
         # Check for collisions with obstacles
         collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
@@ -202,7 +199,7 @@ while game_running:
     all_balls.update(all_balls)
 
 
-            character.handle_event(event)   
+    character.handle_event(event)   
 
     #Execute Method
     character.detect_collisions(game_display)
