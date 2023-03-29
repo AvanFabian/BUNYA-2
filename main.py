@@ -50,6 +50,7 @@ class Character(pygame.sprite.Sprite):
     #display the character drawing
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
         pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2) 
 
     #Updating image of character
@@ -76,7 +77,9 @@ class Character(pygame.sprite.Sprite):
             self.move(-1, 0)
 
     def handle_event(self, event):
+        #if button pressed
         if event.type == pygame.KEYDOWN:
+        #Movement control
             if event.key == pygame.K_UP:
                 self.move_up = True
             elif event.key == pygame.K_DOWN:
@@ -85,8 +88,10 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = True
             elif event.key == pygame.K_RIGHT:
                 self.move_right = True
+        #Jump control
             elif event.key == pygame.K_SPACE:
-                self.character.jump()  # Call the jump method when the up arrow is pressed
+                self.jump() 
+        #if button unpressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 self.move_up = False
@@ -103,26 +108,51 @@ class Character(pygame.sprite.Sprite):
             self.jump_flag = True
             self.rect.height += self.jump_size  # Increase the height of the character
             self.collision_box.height = self.rect.height  # Adjust the collision box
+            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))  # Adjust the image 
             self.jump_timer = 0
     
     def update(self):
-        # ...
         if self.jump_flag:
             # Increase the jump timer
             self.jump_timer += 1
-
             # If the jump duration is over, disable the jump flag and reset the size of the character
             if self.jump_timer >= self.jump_duration:
                 self.jump_flag = False
                 self.rect.height -= self.jump_size
-                self.collision_box.height = self.rect.height 
+                self.collision_box.height = self.rect.height
+                self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height)) 
 
-    def detect_collisions(self):
-        if not self.character.jump_flag:  # Skip collision detection if the character is jumping
+    def detect_collisions(self, surface):
+        if self.jump_flag:  # Skip collision detection if the character is jumping
+            print("loncat")
             return 0
+
     
          
       
+
+        # Check for collisions with obstacles
+        collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
+        surface.blit(self.image, self.rect)
+        # If there are collisions, update the color of the collision box
+        if collided_obstacles:
+            pygame.draw.rect(surface, (0,255,0,), self.collision_box, 2)  # Blue
+            print("ketubruk")
+        else:
+            pygame.draw.rect(surface, (255,0,0,), self.collision_box, 2)  # Blue
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+        self.image = pygame.Surface((width, height))
+        self.image.fill((0, 255, 0))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        pass
+
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -132,6 +162,11 @@ character_images = dict(up="HIDROGEN.png", down="HIDROGEN.png", left="HIDROGEN.p
                         down_right="HIDROGEN.png")
 
 # Create the character sprite and add it to a sprite group
+# Obstacle
+obstacle = Obstacle(200, 300, 50, 100)
+obstacles = pygame.sprite.Group()
+obstacles.add(obstacle)
+#Character
 character = Character(display_width / 2, display_height / 2)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
@@ -157,6 +192,7 @@ while game_running:
             game_running = False
         #event when button pressed 
         elif event:
+
             character.handle_event(event) 
         
 
@@ -165,9 +201,18 @@ while game_running:
     # Update the balls
     all_balls.update(all_balls)
 
+
+            character.handle_event(event)   
+
+    #Execute Method
+    character.detect_collisions(game_display)
+    character.update()
+    character.movement()
+
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     all_sprites.draw(game_display)  # Draw all sprites
+    obstacles.draw(game_display) #Draw all obstacle
     character.draw(game_display)
     # Draw the balls
     all_balls.draw(game_display)
