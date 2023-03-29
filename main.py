@@ -1,4 +1,10 @@
 import pygame
+from bola3 import MainBall, BlackBall, WhiteBall
+
+# Define some colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
 
 # Initialize Pygame
 pygame.init()
@@ -17,7 +23,7 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("HIDROGEN.png").convert_alpha()  # Load the sprite image
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect() # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
         self.speed = 5
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
@@ -44,7 +50,7 @@ class Character(pygame.sprite.Sprite):
     #display the character drawing
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-        pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2)
+        pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2) 
 
     #Updating image of character
     def update_image(self, image_path):
@@ -115,7 +121,7 @@ class Character(pygame.sprite.Sprite):
         if not self.character.jump_flag:  # Skip collision detection if the character is jumping
             return 0
     
-        
+         
       
 # Set up the game clock
 clock = pygame.time.Clock()
@@ -128,7 +134,18 @@ character_images = dict(up="HIDROGEN.png", down="HIDROGEN.png", left="HIDROGEN.p
 # Create the character sprite and add it to a sprite group
 character = Character(display_width / 2, display_height / 2)
 all_sprites = pygame.sprite.Group()
-all_sprites.add(character)
+all_sprites.add(character) 
+
+# Create the balls
+black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
+white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
+
+# Add the balls to sprite groups
+all_balls = pygame.sprite.Group()
+# all_balls.add(main_ball)
+all_balls.add(black_balls)
+all_balls.add(white_balls)
+
 
 # Set up the game loop
 game_running = True
@@ -138,16 +155,23 @@ while game_running:
         #event when quit pressed
         if event.type == pygame.QUIT:
             game_running = False
-        #event when button pressed
+        #event when button pressed 
         elif event:
-            character.handle_event(event)
+            character.handle_event(event) 
         
 
-    character.movement()
+    character.movement()  # Call the movement method of the character
+
+    # Update the balls
+    all_balls.update(all_balls)
+
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     all_sprites.draw(game_display)  # Draw all sprites
     character.draw(game_display)
+    # Draw the balls
+    all_balls.draw(game_display)
+    
     # Update the display
     pygame.display.update()
 
