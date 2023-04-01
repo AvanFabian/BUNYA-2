@@ -2,8 +2,8 @@ import random
 import math
 import pygame
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 class MainBall(pygame.sprite.Sprite):
     def __init__(self, color, x, y, radius, speed):
@@ -66,7 +66,8 @@ class BlackBall(MainBall):
         self.start_direction = self.direction
 
         # Define the track of the black ball
-        self.track_points = [(50, 300), (400, 300), (400, 150), (750, 150), (750, 50)]
+        # Last index of track_points is the final point of the track
+        self.track_points = [(50, 300), (400, 300), (400, 150), (750, 150), (750, 50), (SCREEN_WIDTH, 50)]
         self.track_idx = 0
         self.track_dir = 1
         self.track_rect = pygame.Rect(*self.track_points[0], 10, 10) 
@@ -74,8 +75,8 @@ class BlackBall(MainBall):
     def update(self, all_balls):
         super().update(other_balls = all_balls)
 
-        # Check if the black ball is at the end of the track
-        if self.track_idx == len(self.track_points) - 2:
+        # Check if the black ball is at the end of the track / the final point of the track
+        if self.track_idx == len(self.track_points) - 1: # len(self.track_points) -1 is the last index of the track_points
             self.track_dir = -1
         elif self.track_idx == 0 and self.track_dir == -1:
             self.track_dir = 1
@@ -91,9 +92,9 @@ class BlackBall(MainBall):
             if self.track_rect.left < self.track_points[self.track_idx+1][0]:
                 self.track_idx += 1
 
-        # Update the position of the black ball
         if self.track_idx == len(self.track_points) - 1:
-            self.rect.left = -self.radius
+            self.track_rect.topleft = (0,300)
+            self.track_idx = 0
         elif self.track_idx == 0:
             self.rect.top = self.track_rect.top
             self.rect.left = self.track_rect.left
@@ -207,3 +208,10 @@ class WhiteBall(MainBall):
     #     for ball in other_balls:
     #         if self != ball and pygame.sprite.collide_circle(self, ball):
     #             self.direction = random.randint(0, 360)
+
+
+
+         # # Update the position of the black ball
+        # if self.track_idx == len(self.track_points) - 1:
+        #     self.rect.left = -self.radius
+        # Update the position of the black ball
