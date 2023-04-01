@@ -1,5 +1,5 @@
 import pygame
-from bola3 import MainBall, BlackBall, WhiteBall
+# from bola3 import MainBall, BlackBall, WhiteBall
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -10,8 +10,8 @@ BLUE = (0, 0, 255)
 pygame.init()
 
 # Set up the display
-display_width = 800
-display_height = 600
+display_width = 1280
+display_height = 720
 game_display = pygame.display.set_mode((display_width, display_height))
 
 # Set the window title
@@ -28,6 +28,13 @@ class Character(pygame.sprite.Sprite):
         self.speed = 5
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
         self.collision_box.center = self.rect.center  # Position the collision box at the center of the sprite
+        self.current_scale = 1.0 # Define a variable to keep track of the current scale of the image
+        self.max_scale_factor = 1.1
+        self.scale_speed = 0.001
+
+        # Define a variable to keep track of whether the image is scaling up or down
+        self.scaling_up = True
+
 
          # Set initial values for movement flags
         self.move_up = False
@@ -46,17 +53,34 @@ class Character(pygame.sprite.Sprite):
         self.rect.x += dx * self.speed
         self.rect.y += dy * self.speed
         self.collision_box.center = self.rect.center  # Update the position of the collision box to match the sprite
+    #animation of the sprite
+    # def animation(self):
+    #     if self.scaling_up:
+    #         self.current_scale += self.scale_speed
+    #         if self.current_scale >= self.max_scale_factor:
+    #             self.current_scale = self.max_scale_factor
+    #             self.scaling_up = False
+    #     else:
+    #         self.current_scale -= self.scale_speed
+    #         if self.current_scale <= 1.0:
+    #             self.current_scale = 1.0
+    #             self.scaling_up = True
+
+    #     # Scale the image
+    #     scaled_image = pygame.transform.scale(self.image, (int(self.image.get_width() * self.current_scale), int(self.image.get_height() * self.current_scale)))
+
+    #     # Center the scaled image on the screen
+    #     self.image_pos = scaled_image.get_rect(center=self.image.get_rect(center=(pygame.display.get_surface().get_width()/2, pygame.display.get_surface().get_height()/2)).center)
 
     #display the character drawing
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
         pygame.draw.rect(surface, (255, 0, 0), self.collision_box, 2) 
+        surface.blit(self.image, self.rect)
+       
 
     #Updating image of character
     def update_image(self, image_path):
-        self.image = pygame.image.load("HIDROGEN.png").convert_alpha()
-
+        self.image = pygame.image.load(image_path).convert_alpha()
     #Movement of character
     def movement(self):
         if  self.move_up:
@@ -75,7 +99,11 @@ class Character(pygame.sprite.Sprite):
             print("ke kiri")
             self.update_image(character_images["left"])
             self.move(-1, 0)
-
+        #update image for idle
+        else:
+            self.update_image(character_images["default"])
+    
+    #Handle the input from player
     def handle_event(self, event):
         #if button pressed
         if event.type == pygame.KEYDOWN:
@@ -108,9 +136,9 @@ class Character(pygame.sprite.Sprite):
             self.jump_flag = True
             self.rect.height += self.jump_size  # Increase the height of the character
             self.collision_box.height = self.rect.height  # Adjust the collision box
-            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))  # Adjust the image 
             self.jump_timer = 0
     
+    #update the status of jump condition
     def update(self):
         if self.jump_flag:
             # Increase the jump timer
@@ -120,23 +148,19 @@ class Character(pygame.sprite.Sprite):
                 self.jump_flag = False
                 self.rect.height -= self.jump_size
                 self.collision_box.height = self.rect.height
-                self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height)) 
 
+    #method of detection collision 
     def detect_collisions(self, surface):
         if self.jump_flag:  # Skip collision detection if the character is jumping
             print("loncat")
-            return 0
-
-
+            return
         # Check for collisions with obstacles
         collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
         surface.blit(self.image, self.rect)
         # If there are collisions, update the color of the collision box
         if collided_obstacles:
-            pygame.draw.rect(surface, (0,255,0,), self.collision_box, 2)  # Blue
             print("ketubruk")
-        else:
-            pygame.draw.rect(surface, (255,0,0,), self.collision_box, 2)  # Blue
+
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
@@ -154,9 +178,7 @@ class Obstacle(pygame.sprite.Sprite):
 clock = pygame.time.Clock()
 
 # Load the character sprites for each direction
-character_images = dict(up="HIDROGEN.png", down="HIDROGEN.png", left="HIDROGEN.png", right="HIDROGEN.png",
-                        up_left="HIDROGEN.png", up_right="HIDROGEN.png", down_left="HIDROGEN.png",
-                        down_right="HIDROGEN.png")
+character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png", default="HIDROGEN.png")
 
 # Create the character sprite and add it to a sprite group
 # Obstacle
@@ -169,14 +191,14 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
 
 # Create the balls
-black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
-white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
+# black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
+# white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 # all_balls.add(main_ball)
-all_balls.add(black_balls)
-all_balls.add(white_balls)
+# all_balls.add(black_balls)
+# all_balls.add(white_balls)
 
 
 # Set up the game loop
@@ -189,36 +211,30 @@ while game_running:
             game_running = False
         #event when button pressed 
         elif event:
-
             character.handle_event(event) 
-        
-
-    character.movement()  # Call the movement method of the character
-
+    
     # Update the balls
     all_balls.update(all_balls)
-
-
-    character.handle_event(event)   
-
     #Execute Method
     character.detect_collisions(game_display)
     character.update()
     character.movement()
-
+    
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
-    all_sprites.draw(game_display)  # Draw all sprites
-    obstacles.draw(game_display) #Draw all obstacle
     character.draw(game_display)
+    # all_sprites.draw(game_display)  # Draw all sprites
+    obstacles.draw(game_display) #Draw all obstacle
+
     # Draw the balls
     all_balls.draw(game_display)
+    pygame.display.flip()
     
     # Update the display
     pygame.display.update()
 
     # Tick the clock to control the frame rate
-    clock.tick(60)
+    clock.tick(120)
 
 # Quit Pygame
 pygame.quit()
