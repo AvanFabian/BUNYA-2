@@ -1,5 +1,5 @@
 import pygame
-# from bola3 import MainBall, BlackBall, WhiteBall
+from bola3 import MainBall, BlackBall, WhiteBall
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -191,14 +191,13 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
 
 # Create the balls
-# black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
-# white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
+black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
+white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-# all_balls.add(main_ball)
-# all_balls.add(black_balls)
-# all_balls.add(white_balls)
+all_balls.add(black_balls)
+all_balls.add(white_balls)
 
 
 # Set up the game loop
@@ -223,7 +222,7 @@ while game_running:
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     character.draw(game_display)
-    # all_sprites.draw(game_display)  # Draw all sprites
+    all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
 
     # Draw the balls

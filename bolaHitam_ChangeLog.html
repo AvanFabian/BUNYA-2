@@ -1,0 +1,15 @@
+Here, we've removed the code for checking if the ball is at the end of the track, since it's not needed anymore with the
+new curve. Instead, we move the track rectangular area diagonally upwards by subtracting half of the ball's speed from
+its y coordinate (to make it follow the curve), and by adding the same amount to its x coordinate (to keep it moving
+horizontally).
+
+We also simplified the logic for detecting when the ball has reached the next point in the track, since the y coordinate
+is now always decreasing. We just need to check whether the left or right edge of the rectangle has passed the x
+coordinate of the next point.
+
+Finally, we removed the code for handling the special cases when the ball is at the beginning or end of the track, since
+they are no longer necessary. Instead, we reset the ball to the starting point if it reaches the end of the track, and
+let it continue smoothly otherwise.
+
+Next Change Plan :
+- Add a smooth curve to the track, so that the ball moves in a more interesting way.
