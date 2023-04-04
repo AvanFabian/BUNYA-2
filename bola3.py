@@ -62,7 +62,7 @@ class MainBall(pygame.sprite.Sprite):
 
 class BlackBall(MainBall):
     def __init__(self, x, y):
-        super().__init__((0, 0, 0), x, y, 10, 5)
+        super().__init__((0, 0, 0), x, y, 25, 2)
         self.start_direction = self.direction
 
         # Define the track of the black ball
@@ -136,7 +136,7 @@ class BlackBall(MainBall):
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
-        super().__init__((0, 0, 255), x, y, 10, 5)
+        super().__init__((0, 0, 255), x, y, 25, 5)
 
     def update(self, other_balls):
         super().update(other_balls)
@@ -155,15 +155,19 @@ class WhiteBall(MainBall):
             self.rect.bottom = SCREEN_HEIGHT
             self.direction = 360 - self.direction
 
-        # Bounce off black ball
-        # for ball in other_balls:
-        #     if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
-        #         self.direction = random.randint(0, 360)
-
-        # Bounce off white balls
+        # Bounce of white balls
         for ball in other_balls:
             if isinstance(ball, WhiteBall) and ball != self and pygame.sprite.collide_circle(self, ball):
                 self.direction = random.randint(0, 360)
+        
+        # Slow down over time
+        if self.speed > 0:
+            self.speed -= 0.0009
+            print("Current speed:", self.speed)
+        # Stop the ball completely
+        elif self.speed <=0:
+            self.speed = 0
+
 
     # def update(self, other_balls):
     #     super().update(other_balls)

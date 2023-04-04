@@ -119,6 +119,10 @@ class Character(pygame.sprite.Sprite):
         #Jump control
             elif event.key == pygame.K_SPACE:
                 self.jump() 
+        #Kick control
+            elif event.key == pygame.K_x:
+                kick = Kick(character, white_balls)
+                kick.do_kick()
         #if button unpressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
@@ -173,6 +177,22 @@ class Obstacle(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+#Character kick feature
+class Kick:
+    def __init__(self, character, ball):
+        self.character = character
+        self.ball = ball
+
+    def do_kick(self):
+        if isinstance(self.ball, WhiteBall):
+            if self.character.rect.colliderect(self.ball.rect):
+                self.ball.velocity = [0, 0]
+        else:
+            if self.character.rect.colliderect(self.ball.rect):
+                print("Kick successful!")
+                self.ball.velocity = [-5, -5]
+
 
 # Set up the game clock
 clock = pygame.time.Clock()
