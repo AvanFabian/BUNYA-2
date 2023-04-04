@@ -1,9 +1,9 @@
 import pygame
-from setting import width as screen_width, height as screen_height
+from setting import screenwidth, screenheight 
 pygame.init()
 
 # Set the dimensions of the screen
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screenwidth, screenheight))
 
 # Set the font for the buttons
 font = pygame.font.SysFont("Arial", 40)
@@ -12,67 +12,72 @@ font = pygame.font.SysFont("Arial", 40)
 white = (255, 255, 255)
 black = (0, 0, 0)
 
-# Create the buttons
-start_button = font.render("Start", True, black, white)
-help_button = font.render("Help", True, black, white)
-options_button = font.render("Options", True, black, white)
-quit_button = font.render("Quit", True, black, white)
+# Set up the game clock
+clock = pygame.time.Clock()
 
-# Set the coordinates for the buttons
-start_button_rect = start_button.get_rect(center=(screen_width/2, screen_height/4))
-help_button_rect = help_button.get_rect(center=(screen_width/2, screen_height/2))
-options_button_rect = options_button.get_rect(center=(screen_width/2, 3*screen_height/4))
-quit_button_rect = quit_button.get_rect(center=(screen_width/2, 7*screen_height/8))
+class Button:
+    def __init__(self, y, text, bg_color):
+        # self.image = pygame.image.load(image_path)
+        # self.rect = self.image.get_rect()
+        # self.rect.topleft = (screenwidth/2 - self.width/2, y - self.height/2)
+        self.width = 200
+        self.height = 50
+        self.rect = pygame.Rect(screenwidth/2 - self.width/2, y - self.height/2, self.width, self.height)
+        self.text = text
+        self.font = pygame.font.SysFont('Arial', 32)
+        self.font_color = black
+        self.bg_color = bg_color
 
-# Define the function for the help screen
-def help_screen():
-    # Create a list of images to be displayed in the slideshow
-    images = ["instruction1.png", "instruction2.png", "instruction3.png"]
-    index = 0
+    def draw(self, surface):
+        # surface.blit(self.image, self.rect)
+        pygame.draw.rect(surface, self.bg_color, self.rect)
+        text_surface = self.font.render(self.text, True, self.font_color)
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        surface.blit(text_surface, text_rect)
 
-    # Loop through the list of images and display them on the screen
-    while True:
-        # Load the current image and scale it to fit the screen
-        image = pygame.image.load(images[index]).convert()
-        image = pygame.transform.scale(image, (screen_width, screen_height))
+    def is_clicked(self, mouse_pos):
+        return self.rect.collidepoint(mouse_pos)
 
-        # Display the image on the screen
-        screen.blit(image, (0, 0))
-        pygame.display.flip()
+#define the button    
+start_button = Button(320,"Start",white)
+option_button = Button(420,"Option",white)
+help_button = Button(520,"Help",white)
+quit_button = Button(620,"Quit",white)
 
-        # Wait for a key press or the quit event
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
-                return
 
-        # Increment the index to display the next image
-        index = (index + 1) % len(images)
-
-# Define the function for the GUI
-def main_menu():
-    while True:
-        # Display the buttons on the screen
-        screen.fill(white)
-        screen.blit(start_button, start_button_rect)
-        screen.blit(help_button, help_button_rect)
-        screen.blit(options_button, options_button_rect)
-        screen.blit(quit_button, quit_button_rect)
-        pygame.display.flip()
-
-        # Check for button clicks or the quit event
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if start_button_rect.collidepoint(event.pos):
-                    print("Start button clicked")
-                elif help_button_rect.collidepoint(event.pos):
-                    print("Help button clicked")
-                elif options_button_rect.collidepoint(event.pos):
-                    print("option button clicked")
-                elif quit_button_rect.collidepoint(event.pos):
-                    print("Quit button clicked")
-            elif event.type == pygame.QUIT:
+game_running = True
+while game_running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # get mouse position
+            mouse_pos = pygame.mouse.get_pos()
+            if start_button.is_clicked(mouse_pos):
+                import main
+            elif option_button.is_clicked(mouse_pos):
+                import option
+            elif help_button.is_clicked(mouse_pos):
+                import help
+            elif quit_button.is_clicked(mouse_pos):
                 pygame.quit()
-                return
+       
+    
+    screen.fill(black)
+    # Draw the button
+    start_button.draw(screen)
+    option_button.draw(screen)
+    help_button.draw(screen)
+    quit_button.draw(screen)
+    
+    # Update every second
+    pygame.display.flip()
+    # Update the display
+    pygame.display.update()
 
-# Run the GUI
-main_menu()
+    # Tick the clock to control the frame rate
+    clock.tick(120)
+
+# Quit Pygame
+pygame.quit()

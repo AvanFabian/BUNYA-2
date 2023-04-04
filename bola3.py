@@ -1,9 +1,7 @@
 import random
 import math
 import pygame
-
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+from setting import *
 
 class MainBall(pygame.sprite.Sprite):
     def __init__(self, color, x, y, radius, speed):
@@ -46,15 +44,15 @@ class MainBall(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.direction = 180 - self.direction
             self.rect.left = 0
-        elif self.rect.right > SCREEN_WIDTH:
+        elif self.rect.right > screenwidth:
             self.direction = 180 - self.direction
-            self.rect.right = SCREEN_WIDTH
+            self.rect.right = screenwidth
         if self.rect.top < 0:
             self.direction = 360 - self.direction
             self.rect.top = 0
-        elif self.rect.bottom > SCREEN_HEIGHT:
+        elif self.rect.bottom > screenheight:
             self.direction = 360 - self.direction
-            self.rect.bottom = SCREEN_HEIGHT
+            self.rect.bottom = screenheight
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
@@ -67,8 +65,8 @@ class BlackBall(MainBall):
 
         # Define the track of the black ball
         # Last index of track_points is the final point of the track
-        # self.track_points = [(50, 300), (400, 300), (400, 150), (750, 150), (750, 50), (SCREEN_WIDTH, 50)]
-        self.track_points = [(50, 300), (200, 200), (500, 100), (SCREEN_WIDTH/1.5, 50)]
+        # self.track_points = [(50, 300), (400, 300), (400, 150), (750, 150), (750, 50), (screenwidth, 50)]
+        self.track_points = [(50, 300), (200, 200), (500, 100), (screenwidth/1.5, 50)]
         self.track_idx = 0
         self.track_dir = 1
         self.track_rect = pygame.Rect(*self.track_points[0], 10, 10) 
@@ -126,11 +124,11 @@ class BlackBall(MainBall):
         #     self.rect.centery = self.track_rect.centery
 
         # Update the direction of the black ball
-        if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+        if self.rect.left < 0 or self.rect.right > screenwidth:
             self.direction = 180 - self.start_direction
         if self.rect.top < 0:
             self.direction = 360 - self.start_direction
-        if self.rect.bottom > SCREEN_HEIGHT:
+        if self.rect.bottom > screenheight:
             self.direction = 180 - self.start_direction
 
 
@@ -145,14 +143,14 @@ class WhiteBall(MainBall):
         if self.rect.left < 0:
             self.rect.left = 0
             self.direction = 180 - self.direction
-        elif self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
+        elif self.rect.right > screenwidth:
+            self.rect.right = screenwidth
             self.direction = 180 - self.direction
         if self.rect.top < 0:
             self.rect.top = 0
             self.direction = 360 - self.direction
-        elif self.rect.bottom > SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT
+        elif self.rect.bottom > screenheight:
+            self.rect.bottom = screenheight
             self.direction = 360 - self.direction
 
         # Bounce of white balls
@@ -173,9 +171,9 @@ class WhiteBall(MainBall):
     #     super().update(other_balls)
 
     #     # Bounce off walls
-    #     if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+    #     if self.rect.left < 0 or self.rect.right > screenwidth:
     #         self.direction = 180 - self.direction
-    #     if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
+    #     if self.rect.top < 0 or self.rect.bottom > screenheight:
     #         self.direction = 360 - self.direction
 
     #     # Bounce off black ball
@@ -195,9 +193,9 @@ class WhiteBall(MainBall):
 #         super().update(other_balls)
 
 #         # Reverse direction if black ball reaches end of path
-#         if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+#         if self.rect.left < 0 or self.rect.right > screenwidth:
 #             self.direction = 180 - self.start_direction
-#         if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
+#         if self.rect.top < 0 or self.rect.bottom > screenheight:
 #             self.direction = 360 - self.start_direction
 
 # class WhiteBall(MainBall):
@@ -208,9 +206,9 @@ class WhiteBall(MainBall):
 #         super().update(other_balls)
 
 #         # Bounce off walls
-#         if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+#         if self.rect.left < 0 or self.rect.right > screenwidth:
 #             self.direction = 180 - self.direction
-#         if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
+#         if self.rect.top < 0 or self.rect.bottom > screenheight:
 #             self.direction = 360 - self.direction
 
 #         # Bounce off black ball
@@ -226,9 +224,9 @@ class WhiteBall(MainBall):
     #     self.rect.move_ip(dx, dy)
 
     #     # Check if the ball hit the wall
-    #     if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+    #     if self.rect.left < 0 or self.rect.right > screenwidth:
     #         self.direction = 180 - self.direction
-    #     if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
+    #     if self.rect.top < 0 or self.rect.bottom > screenheight:
     #         self.direction = 360 - self.direction
 
     #     # Check if the ball hit another ball
