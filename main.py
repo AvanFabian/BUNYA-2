@@ -1,4 +1,5 @@
 import pygame
+import math
 from bola3 import MainBall, BlackBall, WhiteBall
 
 # Define some colors
@@ -191,14 +192,26 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
 
 # Create the balls
-black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
-white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
+black_balls = [
+    # Add the track points to the black ball objects
+    BlackBall(50, 50), 
+    BlackBall(display_width - 50, 50), 
+    BlackBall(50, display_height - 50), 
+    BlackBall(display_width - 50, display_height - 50)]
+# Add more track points to the black ball objects
+black_balls[0].track_points.extend([(100, 100), (100, 200), (200, 200), (200, 100)])
+
+white_balls = [
+    # Add the track points to the white ball objects
+    WhiteBall(100, 100),
+    WhiteBall(display_width - 100, 100), 
+    WhiteBall(100, display_height - 100), 
+    WhiteBall(display_width - 100, display_height - 100)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 all_balls.add(black_balls)
 all_balls.add(white_balls)
-
 
 # Set up the game loop
 game_running = True
@@ -214,6 +227,8 @@ while game_running:
     
     # Update the balls
     all_balls.update(all_balls)
+
+
     #Execute Method
     character.detect_collisions(game_display)
     character.update()
@@ -225,8 +240,6 @@ while game_running:
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
 
-    # Draw the balls
-    all_balls.draw(game_display)
     pygame.display.flip()
     
     # Update the display

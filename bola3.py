@@ -62,21 +62,22 @@ class MainBall(pygame.sprite.Sprite):
 
 class BlackBall(MainBall):
     def __init__(self, x, y):
-        super().__init__((0, 0, 0), x, y, 10, 5)
+        super().__init__((0, 0, 0), x, y, 20, 5)
         self.start_direction = self.direction
 
         # Define the track of the black ball
         # Last index of track_points is the final point of the track
-        # self.track_points = [(50, 300), (400, 300), (400, 150), (750, 150), (750, 50), (SCREEN_WIDTH, 50)]
         self.track_points = [(50, 300), (200, 200), (500, 100), (SCREEN_WIDTH/1.5, 50)]
         self.track_idx = 0
         self.track_dir = 1
-        self.track_rect = pygame.Rect(*self.track_points[0], 10, 10) 
+        # Create a rectangle to represent the black ball's position on the track
+        # The 10, 10 arguments specify the width and height of the rectangle
+        self.track_rect = pygame.Rect(*self.track_points[0], 10, 10)
 
     def update(self, all_balls):
         super().update(other_balls = all_balls)
 
-            # Move the black ball along the track
+        # Move the black ball along the track
         self.track_rect.move_ip(self.track_dir * self.speed, -self.speed/2)
 
         # Check if the black ball has reached the next point in the track
@@ -98,33 +99,6 @@ class BlackBall(MainBall):
         self.rect.centerx = self.track_rect.centerx
         self.rect.centery = self.track_rect.centery
 
-        # # Check if the black ball is at the end of the track / the final point of the track
-        # if self.track_idx == len(self.track_points) - 1: # len(self.track_points) -1 is the last index of the track_points
-        #     self.track_dir = -1
-        # elif self.track_idx == 0 and self.track_dir == -1:
-        #     self.track_dir = 1
-
-        # # Move the black ball along the track
-        # self.track_rect.move_ip(self.track_dir * self.speed, 0)
-
-        # if self.track_dir == 1:
-        #     if self.track_rect.right > self.track_points[self.track_idx+1][0]:
-        #         self.track_idx += 1
-        # else:
-        #     print([self.track_idx+1])
-        #     if self.track_rect.left < self.track_points[self.track_idx+1][0]:
-        #         self.track_idx += 1
-
-        # if self.track_idx == len(self.track_points) - 1:
-        #     self.track_rect.topleft = (0,300)
-        #     self.track_idx = 0
-        # elif self.track_idx == 0:
-        #     self.rect.top = self.track_rect.top
-        #     self.rect.left = self.track_rect.left
-        # else:
-        #     self.rect.centerx = self.track_rect.centerx
-        #     self.rect.centery = self.track_rect.centery
-
         # Update the direction of the black ball
         if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
             self.direction = 180 - self.start_direction
@@ -133,10 +107,15 @@ class BlackBall(MainBall):
         if self.rect.bottom > SCREEN_HEIGHT:
             self.direction = 180 - self.start_direction
 
+    # Fill the track with a color to make it easier to see
+    def draw(self, surface):
+        pygame.draw.rect(surface, (0, 0, 0), self.track_rect)
+        super().draw(surface)
+
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
-        super().__init__((0, 0, 255), x, y, 10, 5)
+        super().__init__((0, 0, 255), x, y, 25, 5)
 
     def update(self, other_balls):
         super().update(other_balls)
@@ -155,16 +134,15 @@ class WhiteBall(MainBall):
             self.rect.bottom = SCREEN_HEIGHT
             self.direction = 360 - self.direction
 
-        # Bounce off black ball
-        # for ball in other_balls:
-        #     if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
-        #         self.direction = random.randint(0, 360)
-
         # Bounce off white balls
         for ball in other_balls:
             if isinstance(ball, WhiteBall) and ball != self and pygame.sprite.collide_circle(self, ball):
                 self.direction = random.randint(0, 360)
 
+        # Bounce off black ball
+        # for ball in other_balls:
+        #     if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
+        #         self.direction = random.randint(0, 360)
     # def update(self, other_balls):
     #     super().update(other_balls)
 
@@ -178,63 +156,3 @@ class WhiteBall(MainBall):
     #     for ball in other_balls:
     #         if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
     #             self.direction = random.randint(0, 360)
-
-
-# Below is backup code 
-
-# class BlackBall(MainBall):
-#     def __init__(self, x, y):
-#         super().__init__((0, 0, 0), x, y, 10, 5)
-#         self.start_direction = self.direction
-
-#     def update(self, other_balls):
-#         super().update(other_balls)
-
-#         # Reverse direction if black ball reaches end of path
-#         if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
-#             self.direction = 180 - self.start_direction
-#         if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
-#             self.direction = 360 - self.start_direction
-
-# class WhiteBall(MainBall):
-#     def __init__(self, x, y):
-#         super().__init__((0, 0, 255), x, y, 10, 5)
-
-#     def update(self, other_balls):
-#         super().update(other_balls)
-
-#         # Bounce off walls
-#         if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
-#             self.direction = 180 - self.direction
-#         if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
-#             self.direction = 360 - self.direction
-
-#         # Bounce off black ball
-#         for ball in other_balls:
-#             if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
-#                 self.direction = random.randint(0, 360)
-
-# Dibawah ini backup method update lama dari MainBall
-    # def update(self, other_balls):
-    #     # Move the ball in its direction
-    #     dx = self.speed * round(math.cos(math.radians(self.direction)), 2)
-    #     dy = self.speed * round(math.sin(math.radians(self.direction)), 2)
-    #     self.rect.move_ip(dx, dy)
-
-    #     # Check if the ball hit the wall
-    #     if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
-    #         self.direction = 180 - self.direction
-    #     if self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
-    #         self.direction = 360 - self.direction
-
-    #     # Check if the ball hit another ball
-    #     for ball in other_balls:
-    #         if self != ball and pygame.sprite.collide_circle(self, ball):
-    #             self.direction = random.randint(0, 360)
-
-
-
-         # # Update the position of the black ball
-        # if self.track_idx == len(self.track_points) - 1:
-        #     self.rect.left = -self.radius
-        # Update the position of the black ball
