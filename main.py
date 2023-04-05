@@ -1,4 +1,5 @@
 import pygame
+import random
 from setting import *
 from bola3 import BlackBall, WhiteBall
 
@@ -7,13 +8,12 @@ from bola3 import BlackBall, WhiteBall
 pygame.init()
 
 # Set up the display
-display_width = 1280
-display_height = 720
-game_display = pygame.display.set_mode((display_width, display_height))
+game_display = pygame.display.set_mode((screenwidth, screenheight))
 
 # Set the window title
 pygame.display.set_caption("My Game")
-
+#Stage background
+background = pygame.image.load("bg_stage.png").convert()
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -120,8 +120,9 @@ class Character(pygame.sprite.Sprite):
                 self.jump() 
         #Kick control
             elif event.key == pygame.K_x:
-                kick = Kick(character, white_balls)
+                kick = Kick(character, white_ball)
                 kick.do_kick()
+            
         #if button unpressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
@@ -184,13 +185,17 @@ class Kick:
         self.ball = ball
 
     def do_kick(self):
+        #check if this is whiteball
         if isinstance(self.ball, WhiteBall):
             if self.character.rect.colliderect(self.ball.rect):
-                self.ball.velocity = [0, 0]
+                print("Kick successful!")
+                self.ball.direction = random.randint(0, 360)
+                self.ball.speed += 5   # Increase the speed of ball by 5
+        #pass if is not
         else:
             if self.character.rect.colliderect(self.ball.rect):
-                print("Kick successful!")
-                self.ball.velocity = [-5, -5]
+                pass
+                
 
 
 # Load the character sprites for each direction
@@ -202,19 +207,18 @@ obstacle = Obstacle(200, 300, 50, 100)
 obstacles = pygame.sprite.Group()
 obstacles.add(obstacle)
 #Character
-character = Character(display_width / 2, display_height / 2)
+character = Character(screenwidth / 2, screenheight / 2)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
 
 # Create the balls
-black_balls = [BlackBall(50, 50), BlackBall(display_width - 50, 50), BlackBall(50, display_height - 50), BlackBall(display_width - 50, display_height - 50)]
-white_balls = [WhiteBall(100, 100), WhiteBall(display_width - 100, 100), WhiteBall(100, display_height - 100), WhiteBall(display_width - 100, display_height - 100)]
+black_balls = [BlackBall(50, 50), BlackBall(screenwidth - 50, 50), BlackBall(50, screenheight - 50), BlackBall(screenwidth - 50, screenheight - 50)]
+white_ball = WhiteBall(100, 100)
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 all_balls.add(black_balls)
-all_balls.add(white_balls)
-
+all_balls.add(white_ball)
 
 # Set up the game loop
 game_running = True
@@ -235,8 +239,11 @@ while game_running:
     character.update()
     character.movement()
     
+
     # Draw the game world
-    game_display.fill((255, 255, 255))  # Fill the display with white
+    # Scale the background image to fit the new surface
+    game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
+
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
@@ -249,7 +256,7 @@ while game_running:
     pygame.display.update()
 
     # Tick the clock to control the frame rate
-    clock.tick(120)
+    clock.tick(60)
 
 # Quit Pygame
 pygame.quit()

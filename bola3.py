@@ -160,8 +160,7 @@ class WhiteBall(MainBall):
         
         # Slow down over time
         if self.speed > 0:
-            self.speed -= 0.0009
-            print("Current speed:", self.speed)
+            self.speed -= 0.005
         # Stop the ball completely
         elif self.speed <=0:
             self.speed = 0
