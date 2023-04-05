@@ -5,6 +5,7 @@ from setting import *
 
 class MainBall(pygame.sprite.Sprite):
     def __init__(self, color, x, y, radius, speed):
+        # x and y is the position of the ball
         super().__init__()
 
         # Set the ball's properties
@@ -65,7 +66,7 @@ class BlackBall(MainBall):
 
         # Define the track of the black ball
         # Last index of track_points is the final point of the track
-        self.track_points = [(50, 300), (200, 200), (500, 100), (SCREEN_WIDTH/1.5, 50)]
+        self.track_points = [(50, 300), (200, 200), (500, 100), (screenwidth/2, 50)]
         self.track_idx = 0
         self.track_dir = 1
         # Create a rectangle to represent the black ball's position on the track
@@ -75,7 +76,7 @@ class BlackBall(MainBall):
     def update(self, all_balls):
         super().update(other_balls = all_balls)
 
-        # Move the black ball along the track
+        # Move the black ball based on the track_points ## INI SALAH!!!!!
         self.track_rect.move_ip(self.track_dir * self.speed, -self.speed/2)
 
         # Check if the black ball has reached the next point in the track
@@ -106,9 +107,9 @@ class BlackBall(MainBall):
             self.direction = 180 - self.start_direction
 
     def draw_track(self, screen):
-        # Draws the track on the given screen
-        pygame.draw.lines(screen, (255, 0, 0), False, self.track_points, 10)
-
+        # Draws the track based on the track points in self.track_points
+        for i in range(len(self.track_points) - 1):
+            pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 5)
 
 
 class WhiteBall(MainBall):

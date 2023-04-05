@@ -7,9 +7,7 @@ from bola3 import BlackBall, WhiteBall
 pygame.init()
 
 # Set up the display
-display_width = 1280
-display_height = 720
-game_display = pygame.display.set_mode((display_width, display_height))
+game_display = pygame.display.set_mode((screenwidth, screenheight))
 
 # Set the window title
 pygame.display.set_caption("My Game")
@@ -202,30 +200,19 @@ obstacle = Obstacle(200, 300, 50, 100)
 obstacles = pygame.sprite.Group()
 obstacles.add(obstacle)
 #Character
-character = Character(display_width / 2, display_height / 2)
+character = Character(screenwidth / 2, screenheight / 2)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(character) 
 
-# Create the balls
-black_balls = [
-    # Add the track points to the black ball objects
-    BlackBall(50, 50), 
-    BlackBall(display_width - 50, 50), 
-    BlackBall(50, display_height - 50), 
-    BlackBall(display_width - 50, display_height - 50)]
-# Add more track points to the black ball objects
-black_balls[0].track_points.extend([(100, 100), (100, 200), (200, 200), (200, 100)])
+# Create the black balls
+black_ball = BlackBall(screenwidth / 2, screenheight / 2)
 
-white_balls = [
-    # Add the track points to the white ball objects
-    WhiteBall(100, 100),
-    WhiteBall(display_width - 100, 100), 
-    WhiteBall(100, display_height - 100), 
-    WhiteBall(display_width - 100, display_height - 100)]
+# Create the white balls
+white_balls = [WhiteBall(100, 100), WhiteBall(200, 200), WhiteBall(300, 300), WhiteBall(400, 400)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-all_balls.add(black_balls)
+all_balls.add(black_ball)
 all_balls.add(white_balls)
 
 # Set up the game loop
@@ -240,7 +227,7 @@ while game_running:
         elif event:
             character.handle_event(event) 
             
-    black_balls.draw_track(game_display)
+
     
     # Update the balls
     all_balls.update(all_balls)
@@ -257,9 +244,11 @@ while game_running:
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
     all_balls.draw(game_display) #Draw all ball
-    
-    pygame.display.flip()
-    
+        
+    # BlackBall.draw_track(game_display)
+    # for ball in black_balls:
+    black_ball.draw_track(game_display)
+
     # Update the display
     pygame.display.update()
 
@@ -268,3 +257,6 @@ while game_running:
 
 # Quit Pygame
 pygame.quit()
+
+    # for ball in black_balls:
+    #     ball.draw_track(game_display)
