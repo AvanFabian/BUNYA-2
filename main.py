@@ -1,11 +1,7 @@
 import pygame
-import math
-from bola3 import MainBall, BlackBall, WhiteBall
+from setting import *
+from bola3 import BlackBall, WhiteBall
 
-# Define some colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
 
 # Initialize Pygame
 pygame.init()
@@ -18,6 +14,8 @@ game_display = pygame.display.set_mode((display_width, display_height))
 # Set the window title
 pygame.display.set_caption("My Game")
 
+# Set up the game clock
+clock = pygame.time.Clock()
 
 # Define the character sprite class
 class Character(pygame.sprite.Sprite):
@@ -194,9 +192,6 @@ class Kick:
                 print("Kick successful!")
                 self.ball.velocity = [-5, -5]
 
-
-# Set up the game clock
-clock = pygame.time.Clock()
 
 # Load the character sprites for each direction
 character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png", default="HIDROGEN.png")
