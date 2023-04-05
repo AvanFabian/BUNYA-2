@@ -135,7 +135,7 @@ class Character(pygame.sprite.Sprite):
             elif event.key == pygame.K_RIGHT:
                 self.move_right = False  
 
-    #Make character jump              
+    # Make character jump              
     def jump(self):
         if not self.jump_flag:
             self.jump_flag = True
@@ -244,22 +244,25 @@ while game_running:
         #event when button pressed 
         elif event:
             character.handle_event(event) 
+            
+    black_balls.draw_track(game_display)
     
     # Update the balls
     all_balls.update(all_balls)
-
 
     #Execute Method
     character.detect_collisions(game_display)
     character.update()
     character.movement()
     
+    
     # Draw the game world
     game_display.fill((255, 255, 255))  # Fill the display with white
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
-
+    all_balls.draw(game_display) #Draw all ball
+    
     pygame.display.flip()
     
     # Update the display

@@ -107,10 +107,10 @@ class BlackBall(MainBall):
         if self.rect.bottom > SCREEN_HEIGHT:
             self.direction = 180 - self.start_direction
 
-    # Fill the track with a color to make it easier to see
-    def draw(self, surface):
-        pygame.draw.rect(surface, (0, 0, 0), self.track_rect)
-        super().draw(surface)
+    def draw_track(self, screen):
+        # Draws the track on the given screen
+        pygame.draw.lines(screen, (255, 0, 0), False, self.track_points, 10)
+
 
 
 class WhiteBall(MainBall):
