@@ -257,6 +257,3 @@ while game_running:
 
 # Quit Pygame
 pygame.quit()
-
-    # for ball in black_balls:
-    #     ball.draw_track(game_display)

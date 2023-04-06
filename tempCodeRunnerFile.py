@@ -1,1 +1,1 @@
-screenwidth / 2, screenheight / 2
+current
