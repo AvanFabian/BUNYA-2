@@ -1,4 +1,5 @@
 import pygame
+import random
 from setting import *
 from bola3 import BlackBall, WhiteBall
 
@@ -11,7 +12,8 @@ game_display = pygame.display.set_mode((screenwidth, screenheight))
 
 # Set the window title
 pygame.display.set_caption("My Game")
-
+#Stage background
+background = pygame.image.load("bg_stage.png").convert()
 # Set up the game clock
 clock = pygame.time.Clock()
 
@@ -118,8 +120,9 @@ class Character(pygame.sprite.Sprite):
                 self.jump() 
         #Kick control
             elif event.key == pygame.K_x:
-                kick = Kick(character, white_balls)
+                kick = Kick(character, WhiteBall)
                 kick.do_kick()
+            
         #if button unpressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
@@ -182,13 +185,17 @@ class Kick:
         self.ball = ball
 
     def do_kick(self):
+        #check if this is whiteball
         if isinstance(self.ball, WhiteBall):
             if self.character.rect.colliderect(self.ball.rect):
-                self.ball.velocity = [0, 0]
+                print("Kick successful!")
+                self.ball.direction = random.randint(0, 360)
+                self.ball.speed += 5   # Increase the speed of ball by 5
+        #pass if is not
         else:
             if self.character.rect.colliderect(self.ball.rect):
-                print("Kick successful!")
-                self.ball.velocity = [-5, -5]
+                pass
+                
 
 
 # Load the character sprites for each direction
@@ -237,9 +244,10 @@ while game_running:
     character.update()
     character.movement()
     
-    
     # Draw the game world
-    game_display.fill((255, 255, 255))  # Fill the display with white
+    # Scale the background image to fit the new surface
+    game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
+
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
@@ -253,7 +261,7 @@ while game_running:
     pygame.display.update()
 
     # Tick the clock to control the frame rate
-    clock.tick(120)
+    clock.tick(60)
 
 # Quit Pygame
 pygame.quit()

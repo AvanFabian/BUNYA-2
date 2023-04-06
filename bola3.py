@@ -70,128 +70,53 @@ class BlackBall(MainBall):
 
         self.track_idx = 0
         self.track_dir = 1
-        # Create a rectangle to represent the black ball's position on the track
-        # The 10, 10 arguments specify the width and height of the rectangle
-        self.track_rect = pygame.Rect(*self.track_points[0], 10, 10)
+        # Create a rect to represent the black ball's position on the track
+        self.track_rect = pygame.Rect(0, 0, 2 * self.radius, 2 * self.radius)
+        # self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
 
- 
-    def update(self, all_balls):
-        super().update(other_balls=all_balls)
+    # Update method to move the black ball along the track from start to finish nad appearing again at the start and continuesly
+        # Update the black ball's position on the track
+    def update(self, other_balls):
+        super().update(other_balls, self.track_rect)
 
-        # Calculate the angle between the BlackBall's current position and the next point in the track
-        dx = self.track_points[self.track_idx+1][0] - self.track_rect.centerx
-        print(f"dx angle between the BlackBall's current position and the next point in the track : {dx}")
-        dy = self.track_points[self.track_idx+1][1] - self.track_rect.centery
-        print(f"dy angle between the BlackBall's current position and the next point in the track : {dy}")
-        
-        # Add an additional check to ensure that the direction angle is within a certain range
-        if abs(self.direction - 180) < 45 or abs(self.direction - 360) < 45:
-            dy *= -1
-        
-        target_angle = math.degrees(math.atan2(-dy, dx))
-        print(f"Target angle: {target_angle}")
-
-        # Adjust the BlackBall's direction to move towards the next point in the track
-        angle_diff = (target_angle - self.direction + 180) % 360 - 180
-        print(f"Angle diff: {angle_diff}")
-        if angle_diff < 0:
-            self.direction -= min(self.speed, abs(angle_diff))
-            print(f"self.direction when angle_diff < 0: {self.direction}")
-        else:
-            self.direction += min(self.speed, abs(angle_diff))
-            print(f"self.direction when angle_diff > 0: {self.direction}")
-
-        # Move the BlackBall based on its direction and speed
-        dx = math.cos(math.radians(self.direction)) * self.speed
-        dy = -math.sin(math.radians(self.direction)) * self.speed
-        print(f"dx before IP : {dx} dy before IP : {dy}")
-        self.track_rect.move_ip(dx, dy)
-        print(f"dx after IP : {dx} dy after IP : {dy}")
-        print(f"Move IP : {self.track_rect}")
-        
-        # Check if the BlackBall has passed the next point in the track
-        if self.track_dir == 1:
-            if self.track_rect.top > self.track_points[self.track_idx+1][1]:
-                self.track_idx += 1
-        else:
-            if self.track_rect.bottom < self.track_points[self.track_idx+1][1]:
-                self.track_idx += 1
-
-        # Handle bouncing off track ends
-        if self.track_idx == len(self.track_points) - 1:
-            self.track_rect.topleft = (screenwidth/3.0, screenheight) # reset to start of track
-            self.track_idx = 0
-        elif self.track_idx == 0 and self.track_dir == -1:
+        # Move the black ball along the track
+        if self.track_idx == 0:
             self.track_dir = 1
+        elif self.track_idx == len(self.track_points) - 1:
+            self.track_dir = -1
 
-        # Adjust the ball's position based on the position of the track rectangle
-        self.rect.centerx = self.track_rect.centerx
-        self.rect.centery = self.track_rect.centery
+        # Calculate the distance and angle to the next track point
+        next_point = self.track_points[self.track_idx + self.track_dir]
+        dx = next_point[0] - self.track_rect.centerx
+        dy = next_point[1] - self.track_rect.centery
+        distance = math.sqrt(dx**2 + dy**2)
+        angle = math.degrees(math.atan2(dy, dx))
 
-        # Update the direction of the black ball
-        if self.rect.left < 0 or self.rect.right > screenwidth:
+        # Gradually move the ball towards the next track point
+        speed = 2
+        if distance < speed:
+            self.track_idx += self.track_dir
+            self.track_rect.center = self.track_points[self.track_idx]
+        else:
+            self.track_rect.centerx += speed * math.cos(math.radians(angle))
+            self.track_rect.centery += speed * math.sin(math.radians(angle))
+
+        # Update the black ball's direction
+        if self.track_idx == 0:
             self.direction = 180 - self.start_direction
-        if self.rect.top < 0:
+        elif self.track_idx == len(self.track_points) - 1:
             self.direction = 360 - self.start_direction
-        if self.rect.bottom > screenheight:
-            self.direction = 180 - self.start_direction
 
-    # def update(self, all_balls): V1
-    #     super().update(other_balls=all_balls)
+        # Update the black ball's position
+        self.rect.center = self.track_rect.center
 
-    #     # Calculate the angle between the BlackBall's current position and the next point in the track
-    #     dx = self.track_points[self.track_idx+1][0] - self.track_rect.centerx
-    #     dy = self.track_points[self.track_idx+1][1] - self.track_rect.centery
-    #     target_angle = math.degrees(math.atan2(-dy, dx))
-    #     print(f"Target angle: {target_angle}")
-
-    #     # Adjust the BlackBall's direction to move towards the next point in the track
-    #     angle_diff = (target_angle - self.direction + 180) % 360 - 180
-    #     if angle_diff < 0:
-    #         self.direction -= min(self.speed, abs(angle_diff))
-    #     else:
-    #         self.direction += min(self.speed, abs(angle_diff))
-
-    #     # Move the BlackBall based on its direction and speed
-    #     dx = math.cos(math.radians(self.direction)) * self.speed
-    #     dy = -math.sin(math.radians(self.direction)) * self.speed
-    #     print(f"dx before IP : {dx} dy before IP : {dy}")
-    #     self.track_rect.move_ip(dx, dy)
-    #     print(f"dx after IP : {dx} dy after IP : {dy}")
-    #     print(f"Move IP : {self.track_rect.move_ip(dx, dy)}")
-
-    #     # Check if the BlackBall has passed the next point in the track
-    #     if self.track_dir == 1:
-    #         if self.track_rect.top > self.track_points[self.track_idx+1][1]:
-    #             self.track_idx += 1
-    #     else:
-    #         if self.track_rect.bottom < self.track_points[self.track_idx+1][1]:
-    #             self.track_idx += 1
-
-    #     # Handle bouncing off track ends
-    #     if self.track_idx == len(self.track_points) - 1:
-    #         self.track_rect.topleft = (screenwidth/3.0, screenheight) # reset to start of track
-    #         self.track_idx = 0
-    #     elif self.track_idx == 0 and self.track_dir == -1:
-    #         self.track_dir = 1
-
-    #     # Adjust the ball's position based on the position of the track rectangle
-    #     self.rect.centerx = self.track_rect.centerx
-    #     self.rect.centery = self.track_rect.centery
-
-    #     # Update the direction of the black ball
-    #     if self.rect.left < 0 or self.rect.right > screenwidth:
-    #         self.direction = 180 - self.start_direction
-    #     if self.rect.top < 0:
-    #         self.direction = 360 - self.start_direction
-    #     if self.rect.bottom > screenheight:
-    #         self.direction = 180 - self.start_direction
+        # Update the black ball's movement direction
+        super().update(other_balls)
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
         for i in range(len(self.track_points) - 1):
             pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 15)
-
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
@@ -221,8 +146,7 @@ class WhiteBall(MainBall):
         
         # Slow down over time
         if self.speed > 0:
-            self.speed -= 0.0009
-            # print("Current speed:", self.speed)
+            self.speed -= 0.005
         # Stop the ball completely
         elif self.speed <=0:
             self.speed = 0
@@ -354,3 +278,62 @@ class WhiteBall(MainBall):
 #         self.direction = 360 - self.start_direction
 #     if self.rect.bottom > screenheight:
 #         self.direction = 180 - self.start_direction
+
+
+
+# Backu method update lama dari BlackBall
+# def update(self, all_balls):
+#         super().update(other_balls=all_balls)
+
+#         # Calculate the angle between the BlackBall's current position and the next point in the track
+#         dx = self.track_points[self.track_idx+1][0] - self.track_rect.centerx
+#         dy = self.track_points[self.track_idx+1][1] - self.track_rect.centery
+#         target_angle = math.degrees(math.atan2(-dy, dx))
+#         print(f"Target angle: {target_angle}")
+
+#         # Adjust the BlackBall's direction to move towards the next point in the track
+#         angle_diff = (target_angle - self.direction + 180) % 360 - 180
+#         if angle_diff < 0:
+#             self.direction -= min(self.speed, abs(angle_diff))
+#         else:
+#             self.direction += min(self.speed, abs(angle_diff))
+
+#         # Move the BlackBall based on its direction and speed
+#         dx = math.cos(math.radians(self.direction)) * self.speed
+#         dy = -math.sin(math.radians(self.direction)) * self.speed
+#         print(f"dx before IP : {dx} dy before IP : {dy}")
+#         self.track_rect.move_ip(dx, dy)
+#         print(f"dx after IP : {dx} dy after IP : {dy}")
+#         print(f"Move IP : {self.track_rect.move_ip(dx, dy)}")
+
+#         # Check if the BlackBall has passed the next point in the track
+#         if self.track_dir == 1:
+#             if self.track_rect.top > self.track_points[self.track_idx+1][1]:
+#                 self.track_idx += 1
+#         else:
+#             if self.track_rect.bottom < self.track_points[self.track_idx+1][1]:
+#                 self.track_idx += 1
+
+#         # Handle bouncing off track ends
+#         if self.track_idx == len(self.track_points) - 1:
+#             self.track_rect.topleft = (screenwidth/3.0, screenheight) # reset to start of track
+#             self.track_idx = 0
+#         elif self.track_idx == 0 and self.track_dir == -1:
+#             self.track_dir = 1
+
+#         # Adjust the ball's position based on the position of the track rectangle
+#         self.rect.centerx = self.track_rect.centerx
+#         self.rect.centery = self.track_rect.centery
+
+#         # Update the direction of the black ball
+#         if self.rect.left < 0 or self.rect.right > screenwidth:
+#             self.direction = 180 - self.start_direction
+#         if self.rect.top < 0:
+#             self.direction = 360 - self.start_direction
+#         if self.rect.bottom > screenheight:
+#             self.direction = 180 - self.start_direction
+
+    # def draw_track(self, screen):
+    #     # Draws the track based on the track points in self.track_points
+    #     for i in range(len(self.track_points) - 1):
+    #         pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 15)

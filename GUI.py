@@ -1,5 +1,7 @@
 import pygame
-from setting import screenwidth, screenheight 
+from setting import * 
+import sys
+
 pygame.init()
 
 # Set the dimensions of the screen
@@ -8,15 +10,11 @@ screen = pygame.display.set_mode((screenwidth, screenheight))
 # Set the font for the buttons
 font = pygame.font.SysFont("Arial", 40)
 
-# Define the colors to be used
-white = (255, 255, 255)
-black = (0, 0, 0)
-
 # Set up the game clock
 clock = pygame.time.Clock()
 
 class Button:
-    def __init__(self, y, text, bg_color):
+    def __init__(self, y, text, bg_color, initial_volume=0.5, min_volume=0.0, max_volume=1.0, step=0.1):
         # self.image = pygame.image.load(image_path)
         # self.rect = self.image.get_rect()
         # self.rect.topleft = (screenwidth/2 - self.width/2, y - self.height/2)
@@ -25,8 +23,9 @@ class Button:
         self.rect = pygame.Rect(screenwidth/2 - self.width/2, y - self.height/2, self.width, self.height)
         self.text = text
         self.font = pygame.font.SysFont('Arial', 32)
-        self.font_color = black
+        self.font_color = BLACK
         self.bg_color = bg_color
+
 
     def draw(self, surface):
         # surface.blit(self.image, self.rect)
@@ -37,12 +36,13 @@ class Button:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
+    
 
 #define the button    
-start_button = Button(320,"Start",white)
-option_button = Button(420,"Option",white)
-help_button = Button(520,"Help",white)
-quit_button = Button(620,"Quit",white)
+start_button = Button(320,"Start",WHITE)
+option_button = Button(420,"Option",WHITE)
+help_button = Button(520,"Help",WHITE)
+quit_button = Button(620,"Quit",WHITE)
 
 
 game_running = True
@@ -55,16 +55,16 @@ while game_running:
             # get mouse position
             mouse_pos = pygame.mouse.get_pos()
             if start_button.is_clicked(mouse_pos):
-                import main
+                from main import *
             elif option_button.is_clicked(mouse_pos):
-                import option
+                from option import  *
             elif help_button.is_clicked(mouse_pos):
-                import help
+                from help import *
             elif quit_button.is_clicked(mouse_pos):
                 pygame.quit()
        
     
-    screen.fill(black)
+    screen.fill(BLACK)
     # Draw the button
     start_button.draw(screen)
     option_button.draw(screen)
