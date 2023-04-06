@@ -1,18 +1,23 @@
 import pygame
+from button import Button, Volume
 from setting import *
-# import volume
-# import display
-from GUI import Button
+
 
 pygame.init()
 
 screen = pygame.display.set_mode((screenwidth, screenheight))
 
+
 clock = pygame.time.Clock()
 
-display_button = Button(420,"Display",WHITE)
+
 volume_button = Button(320,"Volume",WHITE)
 back_button = Button(520,"Back",WHITE)
+display_button = Button(420,"Display",WHITE)
+
+music_volume = Volume(0.5, 0.0, 1.0, 0.1)
+sfx_volume = Volume(0.7, 0.0, 1.0, 0.1)
+
 
 game_running = True
 while game_running:
@@ -23,13 +28,13 @@ while game_running:
             # get mouse position
             mouse_pos = pygame.mouse.get_pos()
             if volume_button.is_clicked(mouse_pos):
-                # volume.run_volume()  # assuming there's a run_volume function in volume
-                print("volume clicked")
+                print("Music volume:", music_volume.get_volume())
+                print("SFX volume:", sfx_volume.get_volume())
+                from volume import *  # assuming there's a run_volume function in volume
             elif display_button.is_clicked(mouse_pos):
-                # display.run_display()  # assuming there's a run_display function in display
-                print("display clicked")
+                from display import *  # assuming there's a run_display function in display
             elif back_button.is_clicked(mouse_pos):
-                print("back clicked")
+                from GUI import *
       
     screen.fill(BLACK)
     # Draw the button
