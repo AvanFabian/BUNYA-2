@@ -261,7 +261,7 @@ while game_running:
     pygame.display.update()
 
     # Tick the clock to control the frame rate
-    clock.tick(120)
+    clock.tick(60)
 
 # Quit Pygame
 pygame.quit()
