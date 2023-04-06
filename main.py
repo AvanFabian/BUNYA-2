@@ -218,7 +218,7 @@ white_ball = WhiteBall(screenwidth * 0.75, screenheight * 0.75)
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-all_balls.add(black_balls)
+all_balls.add(black_ball)
 all_balls.add(white_ball)
 
 # Set up the game loop
