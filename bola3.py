@@ -3,6 +3,7 @@ import math
 import pygame
 from setting import *
 
+
 class MainBall(pygame.sprite.Sprite):
     def __init__(self, color, x, y, radius, speed):
         # x and y is the position of the ball
@@ -66,7 +67,7 @@ class BlackBall(MainBall):
 
         # Define the track of the black ball
         # Last index of track_points is the final point of the track
-        self.track_points = [(screenwidth/3.0, screenheight), (screenwidth/3.0, 0)]
+        self.track_points = [(screenwidth / 3.0, screenheight), (screenwidth / 3.0, 0)]
 
         self.track_idx = 0
         self.track_dir = 1
@@ -75,7 +76,7 @@ class BlackBall(MainBall):
         # self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
 
     # Update method to move the black ball along the track from start to finish nad appearing again at the start and continuesly
-        # Update the black ball's position on the track
+    # Update the black ball's position on the track
     def update(self, other_balls):
         super().update(other_balls, self.track_rect)
 
@@ -89,7 +90,7 @@ class BlackBall(MainBall):
         next_point = self.track_points[self.track_idx + self.track_dir]
         dx = next_point[0] - self.track_rect.centerx
         dy = next_point[1] - self.track_rect.centery
-        distance = math.sqrt(dx**2 + dy**2)
+        distance = math.sqrt(dx ** 2 + dy ** 2)
         angle = math.degrees(math.atan2(dy, dx))
 
         # Gradually move the ball towards the next track point
@@ -116,7 +117,8 @@ class BlackBall(MainBall):
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
         for i in range(len(self.track_points) - 1):
-            pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 15)
+            pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i + 1], 15)
+
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
@@ -124,7 +126,6 @@ class WhiteBall(MainBall):
 
     def update(self, other_balls):
         super().update(other_balls)
-
         # Bounce off walls
         if self.rect.left < 0:
             self.rect.left = 0
@@ -138,19 +139,18 @@ class WhiteBall(MainBall):
         elif self.rect.bottom > screenheight:
             self.rect.bottom = screenheight
             self.direction = 360 - self.direction
-
         # Bounce of white balls
         for ball in other_balls:
             if isinstance(ball, WhiteBall) and ball != self and pygame.sprite.collide_circle(self, ball):
                 self.direction = random.randint(0, 360)
-        
+
         # Slow down over time
         if self.speed > 0:
             self.speed -= 0.005
+            # print("Current speed:", self.speed)
         # Stop the ball completely
         elif self.speed <=0:
             self.speed = 0
-
 
     # def update(self, other_balls):
     #     super().update(other_balls)
@@ -166,8 +166,7 @@ class WhiteBall(MainBall):
     #         if isinstance(ball, BlackBall) and pygame.sprite.collide_circle(self, ball):
     #             self.direction = random.randint(0, 360)
 
-
-# Below is backup code 
+# Below is backup code
 
 # class BlackBall(MainBall):
 #     def __init__(self, x, y):
@@ -202,30 +201,28 @@ class WhiteBall(MainBall):
 #                 self.direction = random.randint(0, 360)
 
 # Dibawah ini backup method update lama dari MainBall
-    # def update(self, other_balls):
-    #     # Move the ball in its direction
-    #     dx = self.speed * round(math.cos(math.radians(self.direction)), 2)
-    #     dy = self.speed * round(math.sin(math.radians(self.direction)), 2)
-    #     self.rect.move_ip(dx, dy)
+# def update(self, other_balls):
+#     # Move the ball in its direction
+#     dx = self.speed * round(math.cos(math.radians(self.direction)), 2)
+#     dy = self.speed * round(math.sin(math.radians(self.direction)), 2)
+#     self.rect.move_ip(dx, dy)
 
-    #     # Check if the ball hit the wall
-    #     if self.rect.left < 0 or self.rect.right > screenwidth:
-    #         self.direction = 180 - self.direction
-    #     if self.rect.top < 0 or self.rect.bottom > screenheight:
-    #         self.direction = 360 - self.direction
+#     # Check if the ball hit the wall
+#     if self.rect.left < 0 or self.rect.right > screenwidth:
+#         self.direction = 180 - self.direction
+#     if self.rect.top < 0 or self.rect.bottom > screenheight:
+#         self.direction = 360 - self.direction
 
-    #     # Check if the ball hit another ball
-    #     for ball in other_balls:
-    #         if self != ball and pygame.sprite.collide_circle(self, ball):
-    #             self.direction = random.randint(0, 360)
+#     # Check if the ball hit another ball
+#     for ball in other_balls:
+#         if self != ball and pygame.sprite.collide_circle(self, ball):
+#             self.direction = random.randint(0, 360)
 
 
-
-         # # Update the position of the black ball
-        # if self.track_idx == len(self.track_points) - 1:
-        #     self.rect.left = -self.radius
-        # Update the position of the black ball
-
+# # Update the position of the black ball
+# if self.track_idx == len(self.track_points) - 1:
+#     self.rect.left = -self.radius
+# Update the position of the black ball
 
 
 # other BLACKBALL SOlution # HARUS DI CEK JUGA!
@@ -280,7 +277,6 @@ class WhiteBall(MainBall):
 #         self.direction = 180 - self.start_direction
 
 
-
 # Backu method update lama dari BlackBall
 # def update(self, all_balls):
 #         super().update(other_balls=all_balls)
@@ -333,7 +329,7 @@ class WhiteBall(MainBall):
 #         if self.rect.bottom > screenheight:
 #             self.direction = 180 - self.start_direction
 
-    # def draw_track(self, screen):
-    #     # Draws the track based on the track points in self.track_points
-    #     for i in range(len(self.track_points) - 1):
-    #         pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 15)
+# def draw_track(self, screen):
+#     # Draws the track based on the track points in self.track_points
+#     for i in range(len(self.track_points) - 1):
+#         pygame.draw.line(screen, (255, 0, 0), self.track_points[i], self.track_points[i+1], 15)
