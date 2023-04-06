@@ -71,13 +71,14 @@ class BlackBall(MainBall):
         self.track_idx = 0
         self.track_dir = 1
         # Create a rect to represent the black ball's position on the track
-        self.track_rect = pygame.Rect(0, 0, 2 * self.radius, 2 * self.radius)
-        # self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
+        # self.track_rect = pygame.Rect(0, 0, 2 * self.radius, 2 * self.radius)
+        self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
 
     # Update method to move the black ball along the track from start to finish nad appearing again at the start and continuesly
         # Update the black ball's position on the track
     def update(self, other_balls):
         super().update(other_balls, self.track_rect)
+        print('update')
 
         # Move the black ball along the track
         if self.track_idx == 0:

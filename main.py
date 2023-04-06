@@ -1,7 +1,7 @@
 import pygame
 import random
 from setting import *
-from bola3 import BlackBall, WhiteBall
+from bola3 import MainBall, BlackBall, WhiteBall
 
 
 # Initialize Pygame
@@ -213,7 +213,6 @@ all_sprites.add(character)
 
 # Create the black balls
 black_ball = BlackBall(screenwidth / 2, screenheight / 2)
-
 # Create the white balls
 white_balls = [WhiteBall(100, 100), WhiteBall(200, 200), WhiteBall(300, 300), WhiteBall(400, 400)]
 
@@ -241,6 +240,7 @@ while game_running:
 
     #Execute Method
     character.detect_collisions(game_display)
+    # black_ball.update(all_balls)
     character.update()
     character.movement()
     
@@ -248,13 +248,14 @@ while game_running:
     # Scale the background image to fit the new surface
     game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
 
+    
+
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display) #Draw all obstacle
     all_balls.draw(game_display) #Draw all ball
         
-    # BlackBall.draw_track(game_display)
-    # for ball in black_balls:
+    # Draw the track of the black ball
     black_ball.draw_track(game_display)
 
     # Update the display
