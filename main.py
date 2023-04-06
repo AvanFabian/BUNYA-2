@@ -23,6 +23,7 @@ class Character(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("HIDROGEN.png").convert_alpha()  # Load the sprite image
         self.rect = self.image.get_rect() # Use the image's rect as the sprite's rect
+        print(f"self.rect main.py : {self.rect}")
         self.rect.center = (x, y)
         self.speed = 5
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
@@ -214,7 +215,8 @@ all_sprites.add(character)
 # Create the black balls
 black_ball = BlackBall(screenwidth / 2, screenheight / 2)
 # Create the white balls
-white_balls = [WhiteBall(100, 100), WhiteBall(200, 200), WhiteBall(300, 300), WhiteBall(400, 400)]
+# white_balls = [WhiteBall(100, 100), WhiteBall(200, 200), WhiteBall(300, 300), WhiteBall(400, 400)]
+white_balls = WhiteBall(100, 100)
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()

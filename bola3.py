@@ -17,6 +17,8 @@ class MainBall(pygame.sprite.Sprite):
         self.image = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA)
         pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius)
         self.rect = self.image.get_rect(center=(x, y))
+        print(f"MainBall rect: {self.rect}")
+
 
         # Set the ball's direction randomly
         self.direction = random.randint(0, 360)
@@ -77,7 +79,7 @@ class BlackBall(MainBall):
     # Update method to move the black ball along the track from start to finish nad appearing again at the start and continuesly
         # Update the black ball's position on the track
     def update(self, other_balls):
-        super().update(other_balls, self.track_rect)
+        # super().update(other_balls, self.track_rect)
         print('update')
 
         # Move the black ball along the track
@@ -112,7 +114,7 @@ class BlackBall(MainBall):
         self.rect.center = self.track_rect.center
 
         # Update the black ball's movement direction
-        super().update(other_balls)
+        # super().update(other_balls)
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
@@ -122,6 +124,7 @@ class BlackBall(MainBall):
 class WhiteBall(MainBall):
     def __init__(self, x, y):
         super().__init__((0, 0, 255), x, y, 25, 5)
+        print(f"WhiteBall rect: {self.rect}")
 
     def update(self, other_balls):
         super().update(other_balls)
