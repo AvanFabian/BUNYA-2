@@ -1,4 +1,3 @@
-
 import pygame
 from setting import *
 pygame.init()

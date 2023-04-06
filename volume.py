@@ -1,30 +1,10 @@
 import pygame
+from button import Button, Volume
 from setting import *
-from volume import *
+
+
 
 pygame.init()
-
-
-class Volume:
-    def __init__(self, initial_volume=0.5, min_volume=0.0, max_volume=1.0, step=0.1):
-        self.volume = initial_volume
-        self.min_volume = min_volume
-        self.max_volume = max_volume
-        self.step = step
-
-    def increase_volume(self):
-        self.volume = min(self.volume + self.step, self.max_volume)
-
-    def decrease_volume(self):
-        self.volume = max(self.volume - self.step, self.min_volume)
-
-    def set_volume(self, volume):
-        self.volume = max(min(volume, self.max_volume), self.min_volume)
-
-    def get_volume(self):
-        return self.volume
-
-
 
 screen = pygame.display.set_mode((screenwidth, screenheight))
 
@@ -60,12 +40,15 @@ while game_running:
             elif sfx_volume.is_clicked(volume_mouse_pos):
                 sfx_volume.adjust_level()
                 sfx.set_volume(sfx_volume.get_level())
+            elif back_button.is_clicked(mouse_pos):
+                from option import *
 
     screen.fill(BLACK)
 
     # Draw Volume objects
     music_volume.draw(screen)
     sfx_volume.draw(screen)
+    back_button.draw(screen)
 
     # Update the display
     pygame.display.update()
