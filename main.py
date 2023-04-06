@@ -147,6 +147,14 @@ class Character(pygame.sprite.Sprite):
 
     # update the status of jump condition
     def update(self):
+        if self.rect.left < 0:
+            self.rect.left = 0
+        elif self.rect.right > screenwidth:
+            self.rect.right = screenwidth
+        if self.rect.top < 0:
+            self.rect.top = 0
+        elif self.rect.bottom > screenheight:
+            self.rect.bottom = screenheight
         if self.jump_flag:
             # Increase the jump timer
             self.jump_timer += 1
@@ -212,13 +220,14 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character)
 
 # Create the black balls
-black_ball = BlackBall(screenwidth / 2, screenheight / 2)
+black_balls = [BlackBall(50, 50), BlackBall(100, 50), BlackBall(80, 50), BlackBall(30, 50)]
+
 # Create the white balls
 white_ball = WhiteBall(screenwidth * 0.75, screenheight * 0.75)
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-all_balls.add(black_ball)
+all_balls.add(black_balls)
 all_balls.add(white_ball)
 
 # Set up the game loop
