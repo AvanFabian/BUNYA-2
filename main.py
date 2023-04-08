@@ -218,11 +218,11 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character)
 
 # Create the black balls
-black_balls = [BlackBall(50, 50), BlackBall(100, 50), BlackBall(80, 50), BlackBall(30, 50)]
+black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+# black_balls = BlackBall(50, 50)
 
-# Create the white balls
-white_ball = WhiteBall(screenwidth * 0.75, screenheight * 0.75)
-
+# Create the 5 white balls 
+white_ball = [WhiteBall(100, 100), WhiteBall(100, 200), WhiteBall(80, 300), WhiteBall(30, 400), WhiteBall(100, 450)]
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 all_balls.add(black_balls)
