@@ -200,11 +200,11 @@ black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), Blac
 # black_balls = BlackBall(50, 50)
 
 # Create the white balls
-white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
+white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-# all_balls.add(black_balls)
+all_balls.add(black_balls)
 all_balls.add(white_balls)
 
 # Elemenyer

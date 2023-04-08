@@ -1,5 +1,5 @@
 import pygame
-from bola3 import WhiteBall
+from bola3 import BlackBall
 from setting import *
 
 class Elemenyer(pygame.sprite.Sprite):
@@ -22,7 +22,7 @@ class Elemenyer(pygame.sprite.Sprite):
             for col in range(num_columns):
                 ball = None
                 for sprite in ballarrayinput.sprites():
-                    if isinstance(sprite, WhiteBall) and pygame.sprite.collide_rect(sprite, self):
+                    if isinstance(sprite, BlackBall) and pygame.sprite.collide_rect(sprite, self):
                         ball = sprite
                         break
                 if ball:
@@ -41,7 +41,7 @@ class Elemenyer(pygame.sprite.Sprite):
     def update(self, ballarray):
         self.ballarray_colliding = []
         for ball in ballarray.sprites():
-            if isinstance(ball, WhiteBall) and pygame.sprite.collide_rect(self, ball):
+            if isinstance(ball, BlackBall) and pygame.sprite.collide_rect(self, ball):
                 self.ballarray_colliding.append(ball)
                 if ball not in self.ballarray:
                     self.ballarray.append(ball)
