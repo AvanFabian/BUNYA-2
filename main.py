@@ -1,8 +1,7 @@
 import pygame
 import random
 from setting import *
-from bola3 import MainBall, BlackBall, WhiteBall
-
+from bola3 import BlackBall, WhiteBall
 
 # Initialize Pygame
 pygame.init()
@@ -23,8 +22,7 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("HIDROGEN.png").convert_alpha()  # Load the sprite image
-        self.rect = self.image.get_rect() # Use the image's rect as the sprite's rect
-        print(f"self.rect main.py : {self.rect}")
+        self.rect = self.image.get_rect()  # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
         self.speed = 5
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
@@ -220,11 +218,11 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(character)
 
 # Create the black balls
-black_balls = [BlackBall(50, 50), BlackBall(100, 50), BlackBall(80, 50), BlackBall(30, 50)]
+black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+# black_balls = BlackBall(50, 50)
 
-# Create the white balls
-white_ball = WhiteBall(screenwidth * 0.75, screenheight * 0.75)
-
+# Create the 5 white balls 
+white_ball = [WhiteBall(100, 100), WhiteBall(100, 200), WhiteBall(80, 300), WhiteBall(30, 400), WhiteBall(100, 450)]
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 all_balls.add(black_balls)
@@ -247,7 +245,6 @@ while game_running:
 
     # Execute Method
     character.detect_collisions(game_display)
-    # black_ball.update(all_balls)
     character.update()
     character.movement()
 
@@ -255,8 +252,7 @@ while game_running:
     # Scale the background image to fit the new surface
     game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
 
-    
-
+    all_balls.draw(game_display)  # Draw all ball
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
     obstacles.draw(game_display)  # Draw all obstacle

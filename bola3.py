@@ -1,5 +1,6 @@
 import random
 import math
+import time
 import pygame
 from setting import *
 
@@ -58,64 +59,149 @@ class MainBall(pygame.sprite.Sprite):
             self.direction = 360 - self.direction
             self.rect.bottom = screenheight
 
+    def bounce_walls(self):
+        # Bounce off walls
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.direction = 180 - self.direction
+        elif self.rect.right > screenwidth:
+            self.rect.right = screenwidth
+            self.direction = 180 - self.direction
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.direction = 360 - self.direction
+        elif self.rect.bottom > screenheight:
+            self.rect.bottom = screenheight
+            self.direction = 360 - self.direction
+
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
 
 class BlackBall(MainBall):
+
     def __init__(self, x, y):
         super().__init__((0, 0, 0), x, y, 25, 5)
         self.start_direction = self.direction
 
         # Define the track of the black ball
-        # Last index of track_points is the final point of the track
         self.track_points = [(screenwidth / 3.0, screenheight), (screenwidth / 3.0, 0)]
 
         self.track_idx = 0
         self.track_dir = 1
+
         # Create a rect to represent the black ball's position on the track
-        # self.track_rect = pygame.Rect(0, 0, 2 * self.radius, 2 * self.radius)
         self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
+        self.track_rect = pygame.Rect(*self.track_points[self.track_idx], 1, 1)
+        self.start_direction = self.start_direction
+        self.direction = self.start_direction
+        self.speed = 4 # speed of the black ball
+        self.on_track = True # is the black ball on the track?
 
-    # Update method to move the black ball along the track from start to finish nad appearing again at the start and continuesly
-    # Update the black ball's position on the track
     def update(self, other_balls):
-        # super().update(other_balls, self.track_rect)
-        print('update')
+        if self.on_track:
+            # Move the black ball along the track
+            if self.track_idx == 0:
+                self.track_dir = 1
+            elif self.track_idx == len(self.track_points) - 1:
+                self.track_dir = -1
+            # Calculate the distance and angle to the next track point
+            next_point = self.track_points[self.track_idx + self.track_dir]
+            dx = next_point[0] - self.track_rect.centerx
+            dy = next_point[1] - self.track_rect.centery
+            distance = math.sqrt(dx ** 2 + dy ** 2)
+            angle = math.degrees(math.atan2(dy, dx))
 
-        # Move the black ball along the track
-        if self.track_idx == 0:
-            self.track_dir = 1
-        elif self.track_idx == len(self.track_points) - 1:
-            self.track_dir = -1
+            # Gradually move the ball towards the next track point
+            if distance < self.speed:
+                self.track_idx += self.track_dir
+                self.track_rect.center = self.track_points[self.track_idx]
+            else:
+                self.track_rect.centerx += self.speed * math.cos(math.radians(angle))
+                self.track_rect.centery += self.speed * math.sin(math.radians(angle))
 
-        # Calculate the distance and angle to the next track point
-        next_point = self.track_points[self.track_idx + self.track_dir]
-        dx = next_point[0] - self.track_rect.centerx
-        dy = next_point[1] - self.track_rect.centery
-        distance = math.sqrt(dx ** 2 + dy ** 2)
-        angle = math.degrees(math.atan2(dy, dx))
+            # Update the black ball's direction when it reaches a track point
+            if self.track_idx == 0:
+                self.direction = 180 - self.start_direction
+            elif self.track_idx == len(self.track_points) - 1:
+                self.direction = 360 - self.start_direction
 
-        # Gradually move the ball towards the next track point
-        speed = 2
-        if distance < speed:
-            self.track_idx += self.track_dir
-            self.track_rect.center = self.track_points[self.track_idx]
+            self.rect.center = self.track_rect.center
+
+            # Check for collision with white ball
+            for ball in other_balls:
+                if isinstance(ball, WhiteBall):
+                    if self.rect.colliderect(ball.rect):
+                        # Wait for 0.5 seconds before resolving the collision
+                        time.sleep(0.1)
+                        self.on_track = False
+
         else:
-            self.track_rect.centerx += speed * math.cos(math.radians(angle))
-            self.track_rect.centery += speed * math.sin(math.radians(angle))
+            # Move the black ball away from the white ball
+            super().update(other_balls)
 
-        # Update the black ball's direction
-        if self.track_idx == 0:
-            self.direction = 180 - self.start_direction
-        elif self.track_idx == len(self.track_points) - 1:
-            self.direction = 360 - self.start_direction
+    # # Update the black ball's position on the track
+    # def update(self, other_balls):
+    #     print('update')
 
-        # Update the black ball's position
-        self.rect.center = self.track_rect.center
+    #     not_collided = True
+    #     for ball in other_balls:
+    #         if isinstance(ball, WhiteBall):
+    #             if self.rect.colliderect(ball.rect):
+    #                 # Move the black ball away from the track by 5 pixels
+    #                 dx = self.rect.centerx - ball.rect.centerx
+    #                 print(f"dx is: {dx}")
+    #                 dy = self.rect.centery - ball.rect.centery
+    #                 print(f"dy is: {dy}")
+    #                 dist = math.hypot(dx, dy)
+    #                 print(f"dist is: {dist}")
 
-        # Update the black ball's movement direction
-        # super().update(other_balls)
+    #                 if dist != 0:
+    #                     print(f"black ball centerx before collide: {self.rect.centerx}")
+    #                     self.rect.centerx += int(50 * dx / dist)
+    #                     print(f"black ball centerx after collide: {self.rect.centerx}")
+    #                     print(f"black ball centery before collide: {self.rect.centery}")
+    #                     self.rect.centery += int(50 * dy / dist)
+    #                     print(f"black ball centery after collide: {self.rect.centery}")
+
+    #                 not_collided = False
+
+    #     # Update the black ball's position based on the track rect or collision detection
+    #     if not_collided:
+    #         print(f"is ENTERING not_collided if statement: {not_collided}")
+    #         # Move the black ball along the track
+    #         if self.track_idx == 0:
+    #             self.track_dir = 1
+    #         elif self.track_idx == len(self.track_points) - 1:
+    #             self.track_dir = -1
+    #         # Calculate the distance and angle to the next track point
+    #         next_point = self.track_points[self.track_idx + self.track_dir]
+    #         dx = next_point[0] - self.track_rect.centerx
+    #         dy = next_point[1] - self.track_rect.centery
+    #         distance = math.sqrt(dx ** 2 + dy ** 2)
+    #         angle = math.degrees(math.atan2(dy, dx))
+
+    #         # Gradually move the ball towards the next track point
+    #         speed = 2
+    #         if distance < speed:
+    #             self.track_idx += self.track_dir
+    #             self.track_rect.center = self.track_points[self.track_idx]
+    #         else:
+    #             self.track_rect.centerx += speed * math.cos(math.radians(angle))
+    #             print(f"track rect centerx after gradually move: {self.track_rect.centerx}")
+    #             self.track_rect.centery += speed * math.sin(math.radians(angle))
+    #             print(f"track rect centery after gradually move: {self.track_rect.centery}")
+
+    #         # Update the black ball's direction when it reaches a track point
+    #         if self.track_idx == 0:
+    #             self.direction = 180 - self.start_direction
+    #         elif self.track_idx == len(self.track_points) - 1:
+    #             self.direction = 360 - self.start_direction
+
+    #         self.rect.center = self.track_rect.center
+    #         print(f"track rect: {self.track_rect.center}")        
+            
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
@@ -130,31 +216,19 @@ class WhiteBall(MainBall):
 
     def update(self, other_balls):
         super().update(other_balls)
-        # Bounce off walls
-        if self.rect.left < 0:
-            self.rect.left = 0
-            self.direction = 180 - self.direction
-        elif self.rect.right > screenwidth:
-            self.rect.right = screenwidth
-            self.direction = 180 - self.direction
-        if self.rect.top < 0:
-            self.rect.top = 0
-            self.direction = 360 - self.direction
-        elif self.rect.bottom > screenheight:
-            self.rect.bottom = screenheight
-            self.direction = 360 - self.direction
-        # Bounce of white balls
+
+        # Bounce of white balls when hit the black ball
         for ball in other_balls:
-            if isinstance(ball, WhiteBall) and ball != self and pygame.sprite.collide_circle(self, ball):
+            if isinstance(ball, BlackBall) and ball != self and pygame.sprite.collide_circle(self, ball):
                 self.direction = random.randint(0, 360)
 
         # Slow down over time
-        if self.speed > 0:
-            self.speed -= 0.005
+        # if self.speed > 0:
+        #     self.speed -= 0.005
             # print("Current speed:", self.speed)
         # Stop the ball completely
-        elif self.speed <=0:
-            self.speed = 0
+        # elif self.speed <=0:
+        #     self.speed = 0
 
     # def update(self, other_balls):
     #     super().update(other_balls)
