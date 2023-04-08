@@ -141,68 +141,6 @@ class BlackBall(MainBall):
             # Move the black ball away from the white ball
             super().update(other_balls)
 
-    # # Update the black ball's position on the track
-    # def update(self, other_balls):
-    #     print('update')
-
-    #     not_collided = True
-    #     for ball in other_balls:
-    #         if isinstance(ball, WhiteBall):
-    #             if self.rect.colliderect(ball.rect):
-    #                 # Move the black ball away from the track by 5 pixels
-    #                 dx = self.rect.centerx - ball.rect.centerx
-    #                 print(f"dx is: {dx}")
-    #                 dy = self.rect.centery - ball.rect.centery
-    #                 print(f"dy is: {dy}")
-    #                 dist = math.hypot(dx, dy)
-    #                 print(f"dist is: {dist}")
-
-    #                 if dist != 0:
-    #                     print(f"black ball centerx before collide: {self.rect.centerx}")
-    #                     self.rect.centerx += int(50 * dx / dist)
-    #                     print(f"black ball centerx after collide: {self.rect.centerx}")
-    #                     print(f"black ball centery before collide: {self.rect.centery}")
-    #                     self.rect.centery += int(50 * dy / dist)
-    #                     print(f"black ball centery after collide: {self.rect.centery}")
-
-    #                 not_collided = False
-
-    #     # Update the black ball's position based on the track rect or collision detection
-    #     if not_collided:
-    #         print(f"is ENTERING not_collided if statement: {not_collided}")
-    #         # Move the black ball along the track
-    #         if self.track_idx == 0:
-    #             self.track_dir = 1
-    #         elif self.track_idx == len(self.track_points) - 1:
-    #             self.track_dir = -1
-    #         # Calculate the distance and angle to the next track point
-    #         next_point = self.track_points[self.track_idx + self.track_dir]
-    #         dx = next_point[0] - self.track_rect.centerx
-    #         dy = next_point[1] - self.track_rect.centery
-    #         distance = math.sqrt(dx ** 2 + dy ** 2)
-    #         angle = math.degrees(math.atan2(dy, dx))
-
-    #         # Gradually move the ball towards the next track point
-    #         speed = 2
-    #         if distance < speed:
-    #             self.track_idx += self.track_dir
-    #             self.track_rect.center = self.track_points[self.track_idx]
-    #         else:
-    #             self.track_rect.centerx += speed * math.cos(math.radians(angle))
-    #             print(f"track rect centerx after gradually move: {self.track_rect.centerx}")
-    #             self.track_rect.centery += speed * math.sin(math.radians(angle))
-    #             print(f"track rect centery after gradually move: {self.track_rect.centery}")
-
-    #         # Update the black ball's direction when it reaches a track point
-    #         if self.track_idx == 0:
-    #             self.direction = 180 - self.start_direction
-    #         elif self.track_idx == len(self.track_points) - 1:
-    #             self.direction = 360 - self.start_direction
-
-    #         self.rect.center = self.track_rect.center
-    #         print(f"track rect: {self.track_rect.center}")        
-            
-
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
         for i in range(len(self.track_points) - 1):
