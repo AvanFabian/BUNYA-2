@@ -52,3 +52,70 @@ while game_running:
 if pygame.display.get_surface() is not None:
     pygame.display.quit()
 pygame.quit()
+
+#---------------------------------------------------------------------------------------------------------------------
+
+#class Game:
+#     def __init__(self):
+#         pygame.init()
+#         self.screen = pygame.display.set_mode((screenwidth, screenheight))
+#         self.clock = pygame.time.Clock()
+#         self.ball_container = BallContainer()
+    
+#     def run(self):
+#         running = True
+#         while running:
+#             for event in pygame.event.get():
+#                 if event.type == pygame.QUIT:
+#                     running = False
+            
+#             self.screen.fill(BLACK)
+#             # Update and draw the ball container
+#             self.ball_container.update()
+#             self.ball_container.draw(self.screen)
+            
+#             pygame.display.flip()
+#             pygame.display.update()
+#             self.clock.tick(60)
+        
+#         pygame.quit()
+
+# if __name__ == '__main__':
+#     game = Game()
+#     game.run()
+
+#--------------------------------------------------------------------------------------------------------
+
+# class PygameWindow:
+#     def __init__(self, width=640, height=480, title="Pygame Window"):
+#         # Initialize Pygame
+#         pygame.init()
+
+#         # Set the dimensions of the window
+#         self.width = width
+#         self.height = height
+
+#         # Create the window
+#         self.win = pygame.display.set_mode((self.width, self.height))
+
+#         # Set the title of the window
+#         pygame.display.set_caption(title)
+
+#     def run(self):
+#         # Run the game loop
+#         while True:
+
+#             # Handle events
+#             for event in pygame.event.get():
+#                 if event.type == pygame.QUIT:
+#                     pygame.quit()
+#                     quit()
+
+#             # Fill the window with black
+#             self.win.fill((0, 0, 0))
+
+#             # Update the window
+#             pygame.display.update()
+
+# window = PygameWindow(width=800, height=600, title="My Custom Pygame Window")
+# window.run()

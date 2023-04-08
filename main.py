@@ -2,6 +2,7 @@ import pygame
 import random
 from setting import *
 from bola3 import BlackBall, WhiteBall
+from elemenyer import Elemenyer
 
 # Initialize Pygame
 pygame.init()
@@ -120,7 +121,7 @@ class Character(pygame.sprite.Sprite):
                 self.jump()
                 # Kick control
             elif event.key == pygame.K_x:
-                kick = Kick(character, white_ball)
+                kick = Kick(character, white_balls)
                 kick.do_kick()
 
         # if button unpressed
@@ -167,26 +168,6 @@ class Character(pygame.sprite.Sprite):
         if self.jump_flag:  # Skip collision detection if the character is jumping
             print("loncat")
             return
-        # Check for collisions with obstacles
-        collided_obstacles = pygame.sprite.spritecollide(self, obstacles, False)
-        surface.blit(self.image, self.rect)
-        # If there are collisions, update the color of the collision box
-        if collided_obstacles:
-            print("ketubruk")
-
-
-class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
-        super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill((0, 255, 0))
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-    def update(self):
-        pass
-
 
 # Character kick feature
 class Kick:
@@ -195,38 +176,40 @@ class Kick:
         self.ball = ball
 
     def do_kick(self):
+        for object in self.ball:
         # check if this is whiteball
-        if isinstance(self.ball, WhiteBall):
-            if self.character.rect.colliderect(self.ball.rect):
-                print("Kick successful!")
-                self.ball.direction = random.randint(0, 360)
-                self.ball.speed += 5  # Increase the speed of ball by 5
+            if isinstance(object, WhiteBall):
+                if self.character.rect.colliderect(object.rect):
+                    # print("Kick successful!")
+                    object.direction = random.randint(0, 360)
+                    object.speed += 5  # Increase the speed of ball by 5
 
 
 # Load the character sprites for each direction
 character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png",
                         default="HIDROGEN.png")
 
-# Create the character sprite and add it to a sprite group
-# Obstacle
-obstacle = Obstacle(200, 300, 50, 100)
-obstacles = pygame.sprite.Group()
-obstacles.add(obstacle)
 # Character
 character = Character(screenwidth / 2, screenheight / 2)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(character)
 
+
 # Create the black balls
 black_balls = [BlackBall(50, 50), BlackBall(100, 50), BlackBall(80, 50), BlackBall(30, 50)]
 
 # Create the white balls
-white_ball = WhiteBall(screenwidth * 0.75, screenheight * 0.75)
+white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
-all_balls.add(black_balls)
-all_balls.add(white_ball)
+# all_balls.add(black_balls)
+all_balls.add(white_balls)
+
+# Elemenyer
+elemenyer =  Elemenyer(screenwidth*0.5, screenheight*0.5, 200, 200, all_balls, 2, 2)
+elemenyer_group = pygame.sprite.Group()
+elemenyer_group.add(elemenyer)
 
 # Set up the game loop
 game_running = True
@@ -247,15 +230,15 @@ while game_running:
     character.detect_collisions(game_display)
     character.update()
     character.movement()
+    elemenyer.update(all_balls)
 
     # Draw the game world
     # Scale the background image to fit the new surface
     game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
-
     all_balls.draw(game_display)  # Draw all ball
     character.draw(game_display)
     all_sprites.draw(game_display)  # Draw all sprites
-    obstacles.draw(game_display)  # Draw all obstacle
+    elemenyer.draw(game_display)
 
     pygame.display.flip()
 
@@ -269,3 +252,4 @@ while game_running:
 
 # Quit Pygame
 pygame.quit()
+
