@@ -196,7 +196,8 @@ all_sprites.add(character)
 
 
 # Create the black balls
-black_balls = [BlackBall(50, 50), BlackBall(100, 50), BlackBall(80, 50), BlackBall(30, 50)]
+black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+# black_balls = BlackBall(50, 50)
 
 # Create the white balls
 white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
