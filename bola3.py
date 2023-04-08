@@ -86,7 +86,16 @@ class BlackBall(MainBall):
         self.start_direction = self.direction
 
         # Define the track of the black ball
-        self.track_points = [(screenwidth / 3.0, screenheight), (screenwidth / 3.0, 0)]
+        # self.track_points = [(screenwidth / 3.0, screenheight), (screenwidth / 3.0, 0)]
+        self.track_points = [
+                        (screenwidth / 2.3, screenheight),
+                        (screenwidth / 2.3, screenheight/1.2),
+                        (screenwidth / 2.3, screenheight/1.35),
+                        (screenwidth / 2.0, screenheight/1.7),
+                        (screenwidth * 1.6 / 3.0, screenheight / 2.0),
+                        (screenwidth * 1.7 / 3.0, screenheight / 2.0),
+                        (screenwidth * 1.8 / 3.0, screenheight / 2.0),
+                        (screenwidth, screenheight / 2.1)]
 
         self.track_idx = 0
         self.track_dir = 1
@@ -140,6 +149,14 @@ class BlackBall(MainBall):
         else:
             # Move the black ball away from the white ball
             super().update(other_balls)
+            # check if black ball touches the track
+            for point in self.track_points:
+                if self.rect.colliderect(pygame.Rect(*point, 1, 1)):
+                    self.on_track = True
+                    self.track_idx = self.track_points.index(point)
+                    self.track_dir = 1
+                    self.track_rect.center = point
+                    break
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points
