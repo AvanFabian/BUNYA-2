@@ -1,1 +1,3 @@
-, WhiteBall(100, 100), WhiteBall(80, 100), WhiteBall(30, 100), WhiteBall(100, 100)]
+            # elif event.key == pygame.K_x:
+            #     kick = Kick(character, white_balls)
+            #     kick.do_kick()
