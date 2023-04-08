@@ -182,7 +182,7 @@ class Kick:
                 if self.character.rect.colliderect(object.rect):
                     # print("Kick successful!")
                     object.direction = random.randint(0, 360)
-                    object.speed += 5  # Increase the speed of ball by 5
+                    object.speed += 1  # Increase the speed of ball by 5
 
 
 # Load the character sprites for each direction
@@ -196,11 +196,11 @@ all_sprites.add(character)
 
 
 # Create the black balls
-black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(4)]
 # black_balls = BlackBall(50, 50)
 
 # Create the white balls
-white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
+white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(2)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
