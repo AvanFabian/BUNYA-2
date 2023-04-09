@@ -79,7 +79,7 @@ class MainBall(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 
-class BlackBall(MainBall):
+class BlackBall(MainBall, pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__((0, 0, 0), x, y, 25, 5)
