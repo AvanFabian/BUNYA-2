@@ -14,7 +14,7 @@ class GUI:
         pygame.display.set_caption("Bunya: Mari buat senyawa")
 
         # Stage background
-        self.background = pygame.image.load("assets/bg_stage.png").convert()
+        self.background = pygame.image.load("assets/BUNYA_2.png").convert()
 
 
         #define the button    
@@ -47,7 +47,7 @@ class GUI:
                     elif self.quit_button.is_clicked(mouse_pos):
                         game_running = False
 
-            self.screen.fill(BLACK)
+            self.screen.blit(self.background, (0, 0))
             # Draw the button
             self.start_button.draw(self.screen)
             self.option_button.draw(self.screen)
