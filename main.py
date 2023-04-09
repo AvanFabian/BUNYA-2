@@ -241,7 +241,7 @@ class EndScreen:
             if replay_button.collidepoint(mouse_pos):
                 if pygame.mouse.get_pressed()[0]:
                     # Handle replay button click
-                    print("Replay button clicked")
+                    main.run()
                     game_over = False
 
             # Update the screen
@@ -308,6 +308,9 @@ class Main:
                 # event when quit pressed
                 if event.type == pygame.QUIT:
                     main_run = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        main_run = False
                 # event when button pressed
                 elif event:
                     self.character.handle_event(event)            
