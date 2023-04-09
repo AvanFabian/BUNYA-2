@@ -2,14 +2,15 @@ import pygame
 import random
 from setting import *
 from bola3 import BlackBall, WhiteBall
-from elemenyer import Elemenyer
+from elemenyer import Elemenyer, Score
+
 
 
 # Define the character sprite class
 class Character(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.image.load("HIDROGEN.png").convert_alpha()  # Load the sprite image
+        self.image = pygame.image.load("assets/HIDROGEN.png").convert_alpha()  # Load the sprite image
         self.rect = self.image.get_rect()  # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
         self.speed = 5
@@ -35,8 +36,8 @@ class Character(pygame.sprite.Sprite):
         self.jump_flag = False  # Flag to indicate whether the character is jumping
 
         # Load the character sprites for each direction
-        self.character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png",
-                            default="HIDROGEN.png")
+        self.character_images = dict(up="assets/OKSIGEN.png", down="assets/OKSIGEN.png", left="assets/OKSIGEN.png", right="assets/OKSIGEN.png",
+                            default="assets/HIDROGEN.png")
 
 
     # moving of the character
@@ -44,25 +45,6 @@ class Character(pygame.sprite.Sprite):
         self.rect.x += dx * self.speed
         self.rect.y += dy * self.speed
         self.collision_box.center = self.rect.center  # Update the position of the collision box to match the sprite
-
-    # animation of the sprite
-    # def animation(self):
-    #     if self.scaling_up:
-    #         self.current_scale += self.scale_speed
-    #         if self.current_scale >= self.max_scale_factor:
-    #             self.current_scale = self.max_scale_factor
-    #             self.scaling_up = False
-    #     else:
-    #         self.current_scale -= self.scale_speed
-    #         if self.current_scale <= 1.0:
-    #             self.current_scale = 1.0
-    #             self.scaling_up = True
-
-    #     # Scale the image
-    #     scaled_image = pygame.transform.scale(self.image, (int(self.image.get_width() * self.current_scale), int(self.image.get_height() * self.current_scale)))
-
-    #     # Center the scaled image on the screen
-    #     self.image_pos = scaled_image.get_rect(center=self.image.get_rect(center=(pygame.display.get_surface().get_width()/2, pygame.display.get_surface().get_height()/2)).center)
 
     # display the character drawing
     def draw(self, surface):
@@ -108,10 +90,8 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = True
             elif event.key == pygame.K_RIGHT:
                 self.move_right = True
-            # Jump control
             elif event.key == pygame.K_SPACE:
-                self.jump()
-                # Kick control
+                return 0
             elif event.key == pygame.K_x:
                 kick = Kick(main.character, main.white_balls)
                 kick.do_kick()
@@ -126,40 +106,6 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = False
             elif event.key == pygame.K_RIGHT:
                 self.move_right = False
-
-                # Make character jump
-
-    def jump(self):
-        if not self.jump_flag:
-            self.jump_flag = True
-            self.rect.height += self.jump_size  # Increase the height of the character
-            self.collision_box.height = self.rect.height  # Adjust the collision box
-            self.jump_timer = 0
-
-    # update the status of jump condition
-    def update(self):
-        if self.rect.left < 0:
-            self.rect.left = 0
-        elif self.rect.right > screenwidth:
-            self.rect.right = screenwidth
-        if self.rect.top < 0:
-            self.rect.top = 0
-        elif self.rect.bottom > screenheight:
-            self.rect.bottom = screenheight
-        if self.jump_flag:
-            # Increase the jump timer
-            self.jump_timer += 1
-            # If the jump duration is over, disable the jump flag and reset the size of the character
-            if self.jump_timer >= self.jump_duration:
-                self.jump_flag = False
-                self.rect.height -= self.jump_size
-                self.collision_box.height = self.rect.height
-
-    # method of detection collision
-    def detect_collisions(self, surface):
-        if self.jump_flag:  # Skip collision detection if the character is jumping
-            print("loncat")
-            return
 
 # Character kick feature
 class Kick:
@@ -185,21 +131,24 @@ class Main:
         self.game_display = pygame.display.set_mode((screenwidth, screenheight))
 
         # Set the window title
-        pygame.display.set_caption("My Game")
+        pygame.display.set_caption("Bunya: Mari buat senyawa")
         # Stage background
-        self.background = pygame.image.load("bg_stage.png").convert()
+        self.background = pygame.image.load("assets/bg_stage.png").convert()
+
         # Set up the game clock
         self.clock = pygame.time.Clock()
 
+        #score
+        self.score = Score()
 
-        # Character
+        # Character 
         self.character = Character(screenwidth / 2, screenheight / 2)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.character)
 
 
         # Create the black balls
-        self.black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
         # black_balls = BlackBall(50, 50)
 
         # Create the white balls
@@ -211,8 +160,8 @@ class Main:
         self.all_balls.add(self.white_balls)
 
         # Elemenyer
-        self.elemenyer1 =  Elemenyer(0, screenheight*0.5, 100, 300, self.all_balls, 1, 3)
-        self.elemenyer2 =  Elemenyer(screenwidth*0.5, 0 , 300, 100, self.all_balls, 1, 3)
+        self.elemenyer1 =  Elemenyer(0, screenheight*0.56, 100, 300, self.all_balls, 1, 3)
+        self.elemenyer2 =  Elemenyer(screenwidth*0.41, 0 , 300, 100, self.all_balls, 1, 3)
         self.elemenyer_group = pygame.sprite.Group()
         self.elemenyer_group.add(self.elemenyer1)
         self.elemenyer_group.add(self.elemenyer2)
@@ -228,18 +177,16 @@ class Main:
                     main_run = False
                 # event when button pressed
                 elif event:
-                    self.character.handle_event(event)
+                    self.character.handle_event(event)            
 
-                    # Update the balls
+            # Update the balls
             self.all_balls.update(self.all_balls)
 
             # Execute Method
-            self.character.detect_collisions(self.game_display)
             self.character.update()
             self.character.movement()
-            self.elemenyer1.update(self.all_balls)
-            self.elemenyer2.update(self.all_balls)
-
+            for elemenyer in self.elemenyer_group:
+                elemenyer.update(self.all_balls, self.score)
 
             # Draw the game world
             # Scale the background image to fit the new surface
@@ -249,20 +196,79 @@ class Main:
             self.all_sprites.draw(self.game_display)  # Draw all sprites
             self.elemenyer1.draw(self.game_display)
             self.elemenyer2.draw(self.game_display)
-
-
+            self.score.draw(self.game_display)
+            
             pygame.display.flip()
 
-            # BlackBall.draw_track(game_display)
-            # for ball in black_balls:
             # Update the display
             pygame.display.update()
 
             # Tick the clock to control the frame rate
-            self.clock.tick(120)
-
-        # Quit Pygame
-        pygame.quit()
+            self.clock.tick(60)
 
 main = Main()
 main.run()
+
+class EndScreen:
+    def __init__(self, score):
+        pygame.init()
+
+        self.game_display = pygame.display.set_mode((screenwidth, screenheight))
+        pygame.display.set_caption("Bunya: Mari buat senyawa")
+
+        # Set up the font for displaying text
+        self.font = pygame.font.SysFont(None, 50)
+
+        # Define the colors we'll use
+        self.white = (255, 255, 255)
+        self.black = (0, 0, 0)
+
+        self.score = score
+
+    def run(self):
+        game_over = True
+
+        while game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+            # Clear the screen
+            self.game_display.fill(self.white)
+
+            # Draw the text for the game over message and the score
+            message = self.font.render("Game Over", True, self.black)
+            score_text = self.font.render("Score: " + str(self.score), True, self.black)
+            message_rect = message.get_rect(center=(self.display_width/2, self.display_height/3))
+            score_rect = score_text.get_rect(center=(self.display_width/2, self.display_height/2))
+            self.game_display.blit(message, message_rect)
+            self.game_display.blit(score_text, score_rect)
+
+            # Draw the buttons
+            back_button = pygame.draw.rect(self.game_display, self.black, (100, 450, 200, 50))
+            replay_button = pygame.draw.rect(self.game_display, self.black, (500, 450, 200, 50))
+
+            # Draw the text for the buttons
+            back_text = self.font.render("Back", True, self.white)
+            replay_text = self.font.render("Replay", True, self.white)
+            back_text_rect = back_text.get_rect(center=back_button.center)
+            replay_text_rect = replay_text.get_rect(center=replay_button.center)
+            self.game_display.blit(back_text, back_text_rect)
+            self.game_display.blit(replay_text, replay_text_rect)
+
+            # Check for button clicks
+            mouse_pos = pygame.mouse.get_pos()
+            if back_button.collidepoint(mouse_pos):
+                if pygame.mouse.get_pressed()[0]:
+                    # Handle back button click
+                    print("Back button clicked")
+                    game_over = False
+            if replay_button.collidepoint(mouse_pos):
+                if pygame.mouse.get_pressed()[0]:
+                    # Handle replay button click
+                    print("Replay button clicked")
+                    game_over = False
+
+            # Update the screen
+            pygame.display.update()

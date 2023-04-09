@@ -9,7 +9,7 @@ class Elemenyer(pygame.sprite.Sprite):
         self.image.set_alpha(128)
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-
+        self.black_ball_counter = 0  # counter for number of black balls collided with rectangle
         # Center the rectangle at the given position
         self.rect.center = (x, y)
 
@@ -32,24 +32,22 @@ class Elemenyer(pygame.sprite.Sprite):
                     row_balls.append(ball)
             self.ballarray.append(row_balls)
 
-        # Debug output
-        # print(f"Created Elemenyer at ({x}, {y}) with {len(self.ballarray)} rows and {len(self.ballarray[0])} columns")
-        # print(f"Initial ballarray: {ballarrayinput}")
-        # print(f"Initial ballarray colliding with Elemenyer: {self.ballarray_colliding}")
-        # print(f"Initial ballarray inside Elemenyer: {self.ballarray}")
-
-    def update(self, ballarray):
+    def update(self, ballarray, score):
         self.ballarray_colliding = []
         for ball in ballarray.sprites():
             if isinstance(ball, BlackBall) and pygame.sprite.collide_rect(self, ball):
                 self.ballarray_colliding.append(ball)
                 if ball not in self.ballarray:
                     self.ballarray.append(ball)
-                    # Debug output
-                    print(f"Added ball {ball} to Elemenyer at ({self.rect.centerx}, {self.rect.centery})")
-                    print(f"Updated ballarray inside Elemenyer: {self.ballarray}")
-                # if len(self.ballarray_colliding) == 3:
-                #     self.ballarray= []
+                    self.black_ball_counter += 1
+                    if self.black_ball_counter >= 3:
+                        for ball_inside in self.ballarray:
+                            if isinstance(ball_inside, BlackBall):
+                                ballarray.remove(ball_inside)
+                                ball_inside.kill()
+                        self.ballarray = []
+                        self.black_ball_counter = 0
+                        score.add_score(3)  # Increase the score by 3
                 else:
                     if ball.rect.left < self.rect.left:
                         ball.rect.left = self.rect.left
@@ -59,15 +57,29 @@ class Elemenyer(pygame.sprite.Sprite):
                         ball.rect.top = self.rect.top
                     elif ball.rect.bottom > self.rect.bottom:
                         ball.rect.bottom = self.rect.bottom
-                    # Remove and kill the ball if it collides with the rectangle
-                    # if pygame.sprite.collide_rect(self, ball):
-                    #     self.ballarray.remove(ball)
-                    #     # Debug output
-                    #     print(f"Removed ball {ball} from Elemenyer at ({self.rect.centerx}, {self.rect.centery})")
-                    # ball.kill()
 
-        # Debug output
-        # print(f"Updated ballarray colliding with Elemenyer: {self.ballarray_colliding}")
-        # print(f"Final ballarray inside Elemenyer: {self.ballarray}")
     def draw(self, surface):
         pygame.draw.rect(surface, BLUE, self.rect, 2)
+
+class Score(pygame.sprite.Sprite):
+    def __init__(self, initial_score=0):
+        super().__init__()
+        self.score = initial_score
+        self.font = pygame.font.Font(None, 36)
+        self.color = WHITE
+        self.update()
+
+    def update(self):
+        self.image = self.font.render(f"Score: {self.score}", True, self.color)
+        self.rect = self.image.get_rect()
+
+    def add_score(self, points):
+        self.score += points
+        self.update()
+
+    def reset_score(self):
+        self.score = 0
+        self.update()
+
+    def draw(self, surface):
+        surface.blit(self.image, (1080, 10))  # blit the score image onto the specified surface

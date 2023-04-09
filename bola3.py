@@ -178,12 +178,32 @@ class WhiteBall(MainBall):
                 self.direction = random.randint(0, 360)
 
         # Slow down over time
-        # if self.speed > 0:
-        #     self.speed -= 0.005
+        if self.speed > 0:
+            self.speed -= 0.005
             # print("Current speed:", self.speed)
         # Stop the ball completely
-        # elif self.speed <=0:
-        #     self.speed = 0
+        elif self.speed <=0:
+            self.speed = 0
+
+class O(BlackBall):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = pygame.image.load("o_image.png")
+        self.rect = self.image.get_rect(center=(x, y))
+
+
+class C(BlackBall):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = pygame.image.load("c_image.png")
+        self.rect = self.image.get_rect(center=(x, y))
+
+
+class H(BlackBall):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = pygame.image.load("h_image.png")
+        self.rect = self.image.get_rect(center=(x, y))
 
     # def update(self, other_balls):
     #     super().update(other_balls)
