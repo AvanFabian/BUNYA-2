@@ -76,7 +76,7 @@ class MainBall(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 
-class BlackBall(MainBall, pygame.sprite.Sprite):
+class BlackBall(MainBall):
 
     def __init__(self, x, y, start_idx=0):
         super().__init__((0, 0, 0), x, y, 25, 5)
@@ -104,9 +104,8 @@ class BlackBall(MainBall, pygame.sprite.Sprite):
         # '*' is for unpacking the tuple
         # self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
         self.track_rect = pygame.Rect(*self.track_points[self.track_idx], 1, 1)
-        # self.start_direction = self.start_direction
-        # self.direction = self.start_direction
-        self.speed = 4 # speed of the black ball
+        self.start_direction = self.start_direction
+        self.direction = self.start_direction
         self.on_track = True # is the black ball on the track?
 
     def update(self, other_balls):
@@ -146,7 +145,7 @@ class BlackBall(MainBall, pygame.sprite.Sprite):
                 if isinstance(ball, WhiteBall):
                     if self.rect.colliderect(ball.rect):
                         print("Black ball collides with white ball")
-                        self.delay_collide = 100
+                        self.delay_collide = 50
                         self.on_track = False
 
         else:
@@ -183,7 +182,7 @@ class BlackBall(MainBall, pygame.sprite.Sprite):
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
-        super().__init__(WHITE, x, y, 25, 5)
+        super().__init__(WHITE, x, y, 25, 3)
         print(f"WhiteBall rect: {self.rect}")
 
     def update(self, other_balls):
@@ -203,26 +202,37 @@ class WhiteBall(MainBall):
         #     self.speed = 0
 
 class O(BlackBall, MainBall, pygame.sprite.Sprite):
+    print("O class")
     def __init__(self, x, y):
-        MainBall.__init__(self, BLUE, x, y, 25, 5)
+        MainBall.__init__(self, RED, x, y, 25, 2.2)
+        BlackBall.__init__(self, x, y)
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+    def update(self, dt):
+        print("O class update")
+        BlackBall.update(self, dt)
+class C(BlackBall, MainBall):
+    print("C class")
+    def __init__(self, x, y):
+        MainBall.__init__(self, PURPLE, x, y, 25, 2.2)
         BlackBall.__init__(self, x, y)
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-
-class C(BlackBall, MainBall, pygame.sprite.Sprite):
+    def update(self, dt):
+        print("C class update")
+        BlackBall.update(self, dt)
+class H(BlackBall, MainBall):
+    print("H class")
     def __init__(self, x, y):
-        MainBall.__init__(self, PURPLE, x, y, 25, 5)
+        MainBall.__init__(self, GREEN, x, y, 25, 2.2)
         BlackBall.__init__(self, x, y)
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-
-class H(BlackBall, MainBall, pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__(x, y)
-        self.image = pygame.image.load("h_image.png")
-        self.rect = self.image.get_rect(center=(x, y))
+    def update(self, dt):
+        print("H class update")
+        BlackBall.update(self, dt)
 
     # def update(self, other_balls):
     #     super().update(other_balls)
