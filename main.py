@@ -13,7 +13,7 @@ class Character(pygame.sprite.Sprite):
         self.image = pygame.image.load("assets/charabunya.png").convert_alpha()  # Load the sprite image
         self.rect = self.image.get_rect()  # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
-        self.speed = 5
+        self.speed = 10
         self.collision_box = self.image.get_rect()  # Use the sprite image's rect as the collision box
         self.collision_box.center = self.rect.center  # Position the collision box at the center of the sprite
         self.current_scale = 1.0  # Define a variable to keep track of the current scale of the image
@@ -163,6 +163,11 @@ class LoseDetector(pygame.sprite.Sprite):
                 self.ballarray_colliding.append(ball)
                 if ball not in self.ballarray:
                     self.ballarray.append(ball)
+                    self.black_ball_counter += 1
+                    for ball_inside in self.ballarray:
+                        if isinstance(ball_inside, BlackBall):
+                            ballarray.remove(ball_inside)
+                            ball_inside.kill()
                 else:
                     if ball.rect.left < self.rect.left:
                         ball.rect.left = self.rect.left
@@ -304,8 +309,8 @@ class Main:
 
             # Update the balls
             self.all_balls.update(self.all_balls)
-            if len(self.all_balls) == 1:
-                main_run = False
+            # if len(self.all_balls) == 1:
+            #     main_run = False
 
             # Execute Method
             self.character.update()
