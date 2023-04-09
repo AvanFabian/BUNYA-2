@@ -4,19 +4,6 @@ from setting import *
 from bola3 import BlackBall, WhiteBall
 from elemenyer import Elemenyer
 
-# Initialize Pygame
-pygame.init()
-
-# Set up the display
-game_display = pygame.display.set_mode((screenwidth, screenheight))
-
-# Set the window title
-pygame.display.set_caption("My Game")
-# Stage background
-background = pygame.image.load("bg_stage.png").convert()
-# Set up the game clock
-clock = pygame.time.Clock()
-
 
 # Define the character sprite class
 class Character(pygame.sprite.Sprite):
@@ -46,6 +33,11 @@ class Character(pygame.sprite.Sprite):
         self.jump_duration = 30  # Duration of jump in frames
         self.jump_timer = 0  # Timer for tracking jump duration
         self.jump_flag = False  # Flag to indicate whether the character is jumping
+
+        # Load the character sprites for each direction
+        self.character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png",
+                            default="HIDROGEN.png")
+
 
     # moving of the character
     def move(self, dx, dy):
@@ -85,23 +77,23 @@ class Character(pygame.sprite.Sprite):
     def movement(self):
         if self.move_up:
             print("ke atas")
-            self.update_image(character_images["up"])
+            self.update_image(self.character_images["up"])
             self.move(0, -1)
         elif self.move_down:
             print("ke bawah")
-            self.update_image(character_images["down"])
+            self.update_image(self.character_images["down"])
             self.move(0, 1)
         elif self.move_right:
             print("ke kanan")
-            self.update_image(character_images["right"])
+            self.update_image(self.character_images["right"])
             self.move(1, 0)
         elif self.move_left:
             print("ke kiri")
-            self.update_image(character_images["left"])
+            self.update_image(self.character_images["left"])
             self.move(-1, 0)
         # update image for idle
         else:
-            self.update_image(character_images["default"])
+            self.update_image(self.character_images["default"])
 
     # Handle the input from player
     def handle_event(self, event):
@@ -121,7 +113,7 @@ class Character(pygame.sprite.Sprite):
                 self.jump()
                 # Kick control
             elif event.key == pygame.K_x:
-                kick = Kick(character, white_balls)
+                kick = Kick(main.character, main.white_balls)
                 kick.do_kick()
 
         # if button unpressed
@@ -184,73 +176,93 @@ class Kick:
                     object.direction = random.randint(0, 360)
                     object.speed += 5  # Increase the speed of ball by 5
 
+class Main:
+    def __init__(self):
+        # Initialize Pygame
+        pygame.init()
 
-# Load the character sprites for each direction
-character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png",
-                        default="HIDROGEN.png")
+        # Set up the display
+        self.game_display = pygame.display.set_mode((screenwidth, screenheight))
 
-# Character
-character = Character(screenwidth / 2, screenheight / 2)
-all_sprites = pygame.sprite.Group()
-all_sprites.add(character)
+        # Set the window title
+        pygame.display.set_caption("My Game")
+        # Stage background
+        self.background = pygame.image.load("bg_stage.png").convert()
+        # Set up the game clock
+        self.clock = pygame.time.Clock()
 
 
-# Create the black balls
-black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
-# black_balls = BlackBall(50, 50)
+        # Character
+        self.character = Character(screenwidth / 2, screenheight / 2)
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.character)
 
-# Create the white balls
-white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
-# Add the balls to sprite groups
-all_balls = pygame.sprite.Group()
-all_balls.add(black_balls)
-all_balls.add(white_balls)
+        # Create the black balls
+        self.black_balls = [BlackBall(50, 100), BlackBall(100, 150), BlackBall(80, 250), BlackBall(30, 200)]
+        # black_balls = BlackBall(50, 50)
 
-# Elemenyer
-elemenyer =  Elemenyer(screenwidth*0.5, screenheight*0.5, 200, 200, all_balls, 2, 2)
-elemenyer_group = pygame.sprite.Group()
-elemenyer_group.add(elemenyer)
+        # Create the white balls
+        self.white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
-# Set up the game loop
-game_running = True
-while game_running:
-    # Handle events
-    for event in pygame.event.get():
-        # event when quit pressed
-        if event.type == pygame.QUIT:
-            game_running = False
-        # event when button pressed
-        elif event:
-            character.handle_event(event)
+        # Add the balls to sprite groups
+        self.all_balls = pygame.sprite.Group()
+        self.all_balls.add(self.black_balls)
+        self.all_balls.add(self.white_balls)
 
-            # Update the balls
-    all_balls.update(all_balls)
+        # Elemenyer
+        self.elemenyer1 =  Elemenyer(0, screenheight*0.5, 100, 300, self.all_balls, 1, 3)
+        self.elemenyer2 =  Elemenyer(screenwidth*0.5, 0 , 300, 100, self.all_balls, 1, 3)
+        self.elemenyer_group = pygame.sprite.Group()
+        self.elemenyer_group.add(self.elemenyer1)
+        self.elemenyer_group.add(self.elemenyer2)
 
-    # Execute Method
-    character.detect_collisions(game_display)
-    character.update()
-    character.movement()
-    elemenyer.update(all_balls)
+    def run(self):
+        # Set up the game loop
+        main_run = True
+        while main_run:
+            # Handle events
+            for event in pygame.event.get():
+                # event when quit pressed
+                if event.type == pygame.QUIT:
+                    main_run = False
+                # event when button pressed
+                elif event:
+                    self.character.handle_event(event)
 
-    # Draw the game world
-    # Scale the background image to fit the new surface
-    game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
-    all_balls.draw(game_display)  # Draw all ball
-    character.draw(game_display)
-    all_sprites.draw(game_display)  # Draw all sprites
-    elemenyer.draw(game_display)
+                    # Update the balls
+            self.all_balls.update(self.all_balls)
 
-    pygame.display.flip()
+            # Execute Method
+            self.character.detect_collisions(self.game_display)
+            self.character.update()
+            self.character.movement()
+            self.elemenyer1.update(self.all_balls)
+            self.elemenyer2.update(self.all_balls)
 
-    # BlackBall.draw_track(game_display)
-    # for ball in black_balls:
-    # Update the display
-    pygame.display.update()
 
-    # Tick the clock to control the frame rate
-    clock.tick(120)
+            # Draw the game world
+            # Scale the background image to fit the new surface
+            self.game_display.blit(pygame.transform.scale(self.background, (screenwidth, screenheight)), (0, 0))
+            self.all_balls.draw(self.game_display)  # Draw all ball
+            self.character.draw(self.game_display)
+            self.all_sprites.draw(self.game_display)  # Draw all sprites
+            self.elemenyer1.draw(self.game_display)
+            self.elemenyer2.draw(self.game_display)
 
-# Quit Pygame
-pygame.quit()
 
+            pygame.display.flip()
+
+            # BlackBall.draw_track(game_display)
+            # for ball in black_balls:
+            # Update the display
+            pygame.display.update()
+
+            # Tick the clock to control the frame rate
+            self.clock.tick(120)
+
+        # Quit Pygame
+        pygame.quit()
+
+main = Main()
+main.run()
