@@ -105,13 +105,12 @@ class BlackBall(MainBall):
 
         # Create a rect to represent the black ball's position on the track
         # '*' is for unpacking the tuple
-        self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
+        # self.track_rect = pygame.Rect(*self.track_points[0], 20, 20)
         self.track_rect = pygame.Rect(*self.track_points[self.track_idx], 1, 1)
-        self.start_direction = self.start_direction
-        self.direction = self.start_direction
+        # self.start_direction = self.start_direction
+        # self.direction = self.start_direction
         self.speed = 4 # speed of the black ball
         self.on_track = True # is the black ball on the track?
-        self.delay_collide = 0 # delay the collision and getting back on track
 
     def update(self, other_balls):
         if self.on_track:
@@ -150,20 +149,34 @@ class BlackBall(MainBall):
                 if isinstance(ball, WhiteBall):
                     if self.rect.colliderect(ball.rect):
                         print("Black ball collides with white ball")
-                        self.delay_collide = 10
+                        self.delay_collide = 100
                         self.on_track = False
 
         else:
             # Move the black ball away from the white ball
             super().update(other_balls)
             # check if black ball touches the track
-            self.delay_collide -= 3
-            if self.delay_collide <= 0:
-                for point in self.track_points:
-                    buffer_rect = pygame.Rect(point[0]-3, point[1]-3, 5, 5)
-                    if self.rect.colliderect(buffer_rect):
-                        print("Black ball touches the track")
-                        self.on_track = True
+            if self.delay_collide > 0:
+                self.delay_collide -= 1
+                print(f"Colide after -1 : {self.delay_collide}")
+            else:
+                print("self.delay Colide after 0")
+                can_touch_track = True  # boolean flag to allow touching the track
+                for ball in other_balls:
+                    if isinstance(ball, BlackBall) and ball != self:
+                        # check if there is another black ball obstructing the track
+                        if self.rect.colliderect(ball.rect):
+                            print("Disable can touch track")
+                            can_touch_track = False
+                            break
+                if can_touch_track:
+                    # print("Enter Can touch track statement")
+                    for point in self.track_points:
+                        buffer_rect = pygame.Rect(point[0]-3, point[1]-3, 5, 5)
+                        if self.rect.colliderect(buffer_rect):
+                            print("Black ball touches the track")
+                            self.on_track = True
+                            break
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points

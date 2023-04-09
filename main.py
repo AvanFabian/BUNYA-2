@@ -148,7 +148,7 @@ class Main:
 
 
         # Create the black balls
-        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
+        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=i) for i in range(1)]
         # black_balls = BlackBall(50, 50)
 
         # Create the white balls
