@@ -55,7 +55,8 @@ class Elemenyer(pygame.sprite.Sprite):
                         else:
                             score.add_score(3)
                         for ball_inside in self.ballarray:
-                            if isinstance(ball_inside, BlackBall):
+                            if (isinstance(ball_inside, BlackBall) or isinstance(ball_inside, O) 
+                                or isinstance(ball_inside, C) or isinstance(ball_inside, H)):
                                 ballarray.remove(ball_inside)
                                 ball_inside.kill()
                         self.ballarray = []

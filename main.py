@@ -164,10 +164,10 @@ class LoseDetector(pygame.sprite.Sprite):
                 if ball not in self.ballarray:
                     self.ballarray.append(ball)
                     self.black_ball_counter += 1
-                    for ball_inside in self.ballarray:
-                        if isinstance(ball_inside, BlackBall):
-                            ballarray.remove(ball_inside)
-                            ball_inside.kill()
+                    # for ball_inside in self.ballarray:
+                    #     if isinstance(ball_inside, BlackBall):
+                    #         ballarray.remove(ball_inside)
+                    #         ball_inside.kill()
                 else:
                     if ball.rect.left < self.rect.left:
                         ball.rect.left = self.rect.left
@@ -270,30 +270,22 @@ class Main:
         self.character = Character(screenwidth / 2, screenheight / 2)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.character)
-    
+
         # Create the black balls
-        self.o_balls = pygame.sprite.Group()
-        for i in range(5):
-            self.o_balls.add(O(random.random() * screenwidth, random.random() * screenheight))
-            
-        self.c_balls = pygame.sprite.Group()
-        for i in range(5):
-            self.c_balls.add(C(random.random() * screenwidth, random.random() * screenheight))
-            
-        self.h_balls = pygame.sprite.Group()
-        for i in range(5):
-            self.h_balls.add(H(random.random() * screenwidth, random.random() * screenheight))
-
+        # self.o_balls = pygame.sprite.Group([O(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
+        # self.c_balls = pygame.sprite.Group([C(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
+        # self.h_balls = pygame.sprite.Group([H(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
+        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(9)]
         # black_balls = BlackBall(50, 50)
-
         # Create the white balls
         self.white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
         # Add the balls to sprite groups
         self.all_balls = pygame.sprite.Group()
-        self.all_balls.add(self.o_balls)
-        self.all_balls.add(self.c_balls)
-        self.all_balls.add(self.h_balls)
+        self.all_balls.add(self.black_balls)
+        # self.all_balls.add(self.o_balls)
+        # self.all_balls.add(self.c_balls)
+        # self.all_balls.add(self.h_balls)
         self.all_balls.add(self.white_balls)
 
         # Elemenyer
@@ -322,10 +314,6 @@ class Main:
 
             # Update the balls
             self.all_balls.update(self.all_balls)
-            self.o_balls.update(self.all_balls)
-            self.c_balls.update(self.all_balls)
-            self.h_balls.update(self.all_balls)
-            print(self.o_balls)
             # if len(self.all_balls) == 1:
             #     main_run = False
 

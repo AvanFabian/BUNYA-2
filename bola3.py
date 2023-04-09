@@ -4,7 +4,6 @@ import time
 import pygame
 from setting import *
 
-
 class MainBall(pygame.sprite.Sprite):
     def __init__(self, color, x, y, radius, speed):
         # x and y is the position of the ball
@@ -205,7 +204,7 @@ class H(BlackBall, MainBall, pygame.sprite.Sprite):
         BlackBall.__init__(self, x, y)
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+#         self.rect.center = (x, y)
 
     # def update(self, other_balls):
     #     super().update(other_balls)
