@@ -19,8 +19,6 @@ class MainBall(pygame.sprite.Sprite):
         self.image = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA)
         pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius)
         self.rect = self.image.get_rect(center=(x, y))
-        print(f"MainBall rect: {self.rect}")
-
 
         # Set the ball's direction randomly
         self.direction = random.randint(0, 360)
@@ -166,7 +164,7 @@ class BlackBall(MainBall, pygame.sprite.Sprite):
 
 class WhiteBall(MainBall):
     def __init__(self, x, y):
-        super().__init__((0, 0, 255), x, y, 25, 5)
+        super().__init__(WHITE, x, y, 25, 5)
         print(f"WhiteBall rect: {self.rect}")
 
     def update(self, other_balls):
@@ -185,25 +183,29 @@ class WhiteBall(MainBall):
         elif self.speed <=0:
             self.speed = 0
 
-class O(BlackBall):
+class O(BlackBall, MainBall, pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(x, y)
-        self.image = pygame.image.load("o_image.png")
-        self.rect = self.image.get_rect(center=(x, y))
+        MainBall.__init__(self, BLUE, x, y, 25, 5)
+        BlackBall.__init__(self, x, y)
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
 
-
-class C(BlackBall):
+class C(BlackBall, MainBall, pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(x, y)
-        self.image = pygame.image.load("c_image.png")
-        self.rect = self.image.get_rect(center=(x, y))
+        MainBall.__init__(self, PURPLE, x, y, 25, 5)
+        BlackBall.__init__(self, x, y)
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
 
-
-class H(BlackBall):
+class H(BlackBall, MainBall, pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(x, y)
-        self.image = pygame.image.load("h_image.png")
-        self.rect = self.image.get_rect(center=(x, y))
+        MainBall.__init__(self, RED, x, y, 25, 5)
+        BlackBall.__init__(self, x, y)
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
 
     # def update(self, other_balls):
     #     super().update(other_balls)

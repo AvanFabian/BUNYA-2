@@ -1,5 +1,5 @@
 import pygame
-from bola3 import BlackBall
+from bola3 import BlackBall, C, O, H
 from setting import *
 
 class Elemenyer(pygame.sprite.Sprite):
@@ -22,7 +22,8 @@ class Elemenyer(pygame.sprite.Sprite):
             for col in range(num_columns):
                 ball = None
                 for sprite in ballarrayinput.sprites():
-                    if isinstance(sprite, BlackBall) and pygame.sprite.collide_rect(sprite, self):
+                    if (isinstance(sprite, BlackBall) or isinstance(sprite, C) or
+                        isinstance(sprite, O) or isinstance(sprite, H)) and pygame.sprite.collide_rect(sprite, self):
                         ball = sprite
                         break
                 if ball:
@@ -36,11 +37,23 @@ class Elemenyer(pygame.sprite.Sprite):
         self.ballarray_colliding = []
         for ball in ballarray.sprites():
             if isinstance(ball, BlackBall) and pygame.sprite.collide_rect(self, ball):
-                self.ballarray_colliding.append(ball)
+                self.ballarray_colliding.append("BlackBall")
+            elif isinstance(ball, O) and pygame.sprite.collide_rect(self, ball):
+                self.ballarray_colliding.append("O")
+            elif isinstance(ball, H) and pygame.sprite.collide_rect(self, ball):
+                self.ballarray_colliding.append("H")
+            elif isinstance(ball, C) and pygame.sprite.collide_rect(self, ball):
+                self.ballarray_colliding.append("C")
                 if ball not in self.ballarray:
                     self.ballarray.append(ball)
                     self.black_ball_counter += 1
-                    if self.black_ball_counter >= 3:
+                    if len(self.ballarray_colliding) >= 3:
+                        if self.ballarray_colliding.count("O") == 2 and self.ballarray_colliding.count("H") == 1:
+                            score.add_score(5)
+                        elif self.ballarray_colliding.count("C") == 2 and self.ballarray_colliding.count("O") == 1:
+                            score.add_score(5)
+                        else:
+                            score.add_score(3)
                         for ball_inside in self.ballarray:
                             if isinstance(ball_inside, BlackBall):
                                 ballarray.remove(ball_inside)
