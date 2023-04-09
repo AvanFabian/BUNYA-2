@@ -2,27 +2,15 @@ import pygame
 import random
 from setting import *
 from bola3 import BlackBall, WhiteBall
-from elemenyer import Elemenyer
+from elemenyer import Elemenyer, Score
 
-# Initialize Pygame
-pygame.init()
-
-# Set up the display
-game_display = pygame.display.set_mode((screenwidth, screenheight))
-
-# Set the window title
-pygame.display.set_caption("My Game")
-# Stage background
-background = pygame.image.load("bg_stage.png").convert()
-# Set up the game clock
-clock = pygame.time.Clock()
 
 
 # Define the character sprite class
 class Character(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.image.load("HIDROGEN.png").convert_alpha()  # Load the sprite image
+        self.image = pygame.image.load("assets/HIDROGEN.png").convert_alpha()  # Load the sprite image
         self.rect = self.image.get_rect()  # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
         self.speed = 5
@@ -47,30 +35,16 @@ class Character(pygame.sprite.Sprite):
         self.jump_timer = 0  # Timer for tracking jump duration
         self.jump_flag = False  # Flag to indicate whether the character is jumping
 
+        # Load the character sprites for each direction
+        self.character_images = dict(up="assets/OKSIGEN.png", down="assets/OKSIGEN.png", left="assets/OKSIGEN.png", right="assets/OKSIGEN.png",
+                            default="assets/HIDROGEN.png")
+
+
     # moving of the character
     def move(self, dx, dy):
         self.rect.x += dx * self.speed
         self.rect.y += dy * self.speed
         self.collision_box.center = self.rect.center  # Update the position of the collision box to match the sprite
-
-    # animation of the sprite
-    # def animation(self):
-    #     if self.scaling_up:
-    #         self.current_scale += self.scale_speed
-    #         if self.current_scale >= self.max_scale_factor:
-    #             self.current_scale = self.max_scale_factor
-    #             self.scaling_up = False
-    #     else:
-    #         self.current_scale -= self.scale_speed
-    #         if self.current_scale <= 1.0:
-    #             self.current_scale = 1.0
-    #             self.scaling_up = True
-
-    #     # Scale the image
-    #     scaled_image = pygame.transform.scale(self.image, (int(self.image.get_width() * self.current_scale), int(self.image.get_height() * self.current_scale)))
-
-    #     # Center the scaled image on the screen
-    #     self.image_pos = scaled_image.get_rect(center=self.image.get_rect(center=(pygame.display.get_surface().get_width()/2, pygame.display.get_surface().get_height()/2)).center)
 
     # display the character drawing
     def draw(self, surface):
@@ -85,23 +59,23 @@ class Character(pygame.sprite.Sprite):
     def movement(self):
         if self.move_up:
             print("ke atas")
-            self.update_image(character_images["up"])
+            self.update_image(self.character_images["up"])
             self.move(0, -1)
         elif self.move_down:
             print("ke bawah")
-            self.update_image(character_images["down"])
+            self.update_image(self.character_images["down"])
             self.move(0, 1)
         elif self.move_right:
             print("ke kanan")
-            self.update_image(character_images["right"])
+            self.update_image(self.character_images["right"])
             self.move(1, 0)
         elif self.move_left:
             print("ke kiri")
-            self.update_image(character_images["left"])
+            self.update_image(self.character_images["left"])
             self.move(-1, 0)
         # update image for idle
         else:
-            self.update_image(character_images["default"])
+            self.update_image(self.character_images["default"])
 
     # Handle the input from player
     def handle_event(self, event):
@@ -116,12 +90,10 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = True
             elif event.key == pygame.K_RIGHT:
                 self.move_right = True
-            # Jump control
             elif event.key == pygame.K_SPACE:
-                self.jump()
-                # Kick control
+                return 0
             elif event.key == pygame.K_x:
-                kick = Kick(character, white_balls)
+                kick = Kick(main.character, main.white_balls)
                 kick.do_kick()
 
         # if button unpressed
@@ -134,40 +106,6 @@ class Character(pygame.sprite.Sprite):
                 self.move_left = False
             elif event.key == pygame.K_RIGHT:
                 self.move_right = False
-
-                # Make character jump
-
-    def jump(self):
-        if not self.jump_flag:
-            self.jump_flag = True
-            self.rect.height += self.jump_size  # Increase the height of the character
-            self.collision_box.height = self.rect.height  # Adjust the collision box
-            self.jump_timer = 0
-
-    # update the status of jump condition
-    def update(self):
-        if self.rect.left < 0:
-            self.rect.left = 0
-        elif self.rect.right > screenwidth:
-            self.rect.right = screenwidth
-        if self.rect.top < 0:
-            self.rect.top = 0
-        elif self.rect.bottom > screenheight:
-            self.rect.bottom = screenheight
-        if self.jump_flag:
-            # Increase the jump timer
-            self.jump_timer += 1
-            # If the jump duration is over, disable the jump flag and reset the size of the character
-            if self.jump_timer >= self.jump_duration:
-                self.jump_flag = False
-                self.rect.height -= self.jump_size
-                self.collision_box.height = self.rect.height
-
-    # method of detection collision
-    def detect_collisions(self, surface):
-        if self.jump_flag:  # Skip collision detection if the character is jumping
-            print("loncat")
-            return
 
 # Character kick feature
 class Kick:
@@ -182,81 +120,142 @@ class Kick:
                 if self.character.rect.colliderect(object.rect):
                     # print("Kick successful!")
                     object.direction = random.randint(0, 360)
-                    object.speed += 1  # Increase the speed of ball by 5
+                    object.speed += 5  # Increase the speed of ball by 5
+
+        # Set up the game clock
+        self.clock = pygame.time.Clock()
+
+        #score
+        self.score = Score()
+
+        # Character 
+        self.character = Character(screenwidth / 2, screenheight / 2)
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.character)
 
 
-# Load the character sprites for each direction
-character_images = dict(up="OKSIGEN.png", down="OKSIGEN.png", left="OKSIGEN.png", right="OKSIGEN.png",
-                        default="HIDROGEN.png")
+        # Create the black balls
+        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(10)]
+        # black_balls = BlackBall(50, 50)
 
-# Character
-character = Character(screenwidth / 2, screenheight / 2)
-all_sprites = pygame.sprite.Group()
-all_sprites.add(character)
-
-
-# Create the black balls
-black_balls = BlackBall(screenwidth/2, screenheight/2, start_idx=0)
-black_balls2 = BlackBall(screenwidth/2, screenheight/2, start_idx=1)
-black_balls3 = BlackBall(screenwidth/2, screenheight/2, start_idx=2)
-black_balls4 = BlackBall(screenwidth/2, screenheight/2, start_idx=3)
-# black_balls = BlackBall(50, 50)
-
-# Create the white balls
-white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(2)]
+        # Create the white balls
+        self.white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
 # Add the balls to sprite groups
 all_balls = pygame.sprite.Group()
 all_balls.add(black_balls)
-all_balls.add(black_balls2)
-all_balls.add(black_balls3)
-all_balls.add(black_balls4)
 all_balls.add(white_balls)
 
-# Elemenyer
-elemenyer =  Elemenyer(screenwidth*0.5, screenheight*0.5, 200, 200, all_balls, 2, 2)
-elemenyer_group = pygame.sprite.Group()
-elemenyer_group.add(elemenyer)
+        # Elemenyer
+        self.elemenyer1 =  Elemenyer(0, screenheight*0.56, 100, 300, self.all_balls, 1, 3)
+        self.elemenyer2 =  Elemenyer(screenwidth*0.41, 0 , 300, 100, self.all_balls, 1, 3)
+        self.elemenyer_group = pygame.sprite.Group()
+        self.elemenyer_group.add(self.elemenyer1)
+        self.elemenyer_group.add(self.elemenyer2)
 
-# Set up the game loop
-game_running = True
-while game_running:
-    # Handle events
-    for event in pygame.event.get():
-        # event when quit pressed
-        if event.type == pygame.QUIT:
-            game_running = False
-        # event when button pressed
-        elif event:
-            character.handle_event(event)
+    def run(self):
+        # Set up the game loop
+        main_run = True
+        while main_run:
+            # Handle events
+            for event in pygame.event.get():
+                # event when quit pressed
+                if event.type == pygame.QUIT:
+                    main_run = False
+                # event when button pressed
+                elif event:
+                    self.character.handle_event(event)            
 
             # Update the balls
-    all_balls.update(all_balls)
+            self.all_balls.update(self.all_balls)
 
-    # Execute Method
-    character.detect_collisions(game_display)
-    character.update()
-    character.movement()
-    elemenyer.update(all_balls)
+            # Execute Method
+            self.character.update()
+            self.character.movement()
+            for elemenyer in self.elemenyer_group:
+                elemenyer.update(self.all_balls, self.score)
 
-    # Draw the game world
-    # Scale the background image to fit the new surface
-    game_display.blit(pygame.transform.scale(background, (screenwidth, screenheight)), (0, 0))
-    all_balls.draw(game_display)  # Draw all ball
-    character.draw(game_display)
-    all_sprites.draw(game_display)  # Draw all sprites
-    elemenyer.draw(game_display)
+            # Draw the game world
+            # Scale the background image to fit the new surface
+            self.game_display.blit(pygame.transform.scale(self.background, (screenwidth, screenheight)), (0, 0))
+            self.all_balls.draw(self.game_display)  # Draw all ball
+            self.character.draw(self.game_display)
+            self.all_sprites.draw(self.game_display)  # Draw all sprites
+            self.elemenyer1.draw(self.game_display)
+            self.elemenyer2.draw(self.game_display)
+            self.score.draw(self.game_display)
+            
+            pygame.display.flip()
 
-    pygame.display.flip()
+            # Update the display
+            pygame.display.update()
 
-    # BlackBall.draw_track(game_display)
-    # for ball in black_balls:
-    # Update the display
-    pygame.display.update()
+            # Tick the clock to control the frame rate
+            self.clock.tick(60)
 
-    # Tick the clock to control the frame rate
-    clock.tick(120)
+main = Main()
+main.run()
 
-# Quit Pygame
-pygame.quit()
+class EndScreen:
+    def __init__(self, score):
+        pygame.init()
 
+        self.game_display = pygame.display.set_mode((screenwidth, screenheight))
+        pygame.display.set_caption("Bunya: Mari buat senyawa")
+
+        # Set up the font for displaying text
+        self.font = pygame.font.SysFont(None, 50)
+
+        # Define the colors we'll use
+        self.white = (255, 255, 255)
+        self.black = (0, 0, 0)
+
+        self.score = score
+
+    def run(self):
+        game_over = True
+
+        while game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+            # Clear the screen
+            self.game_display.fill(self.white)
+
+            # Draw the text for the game over message and the score
+            message = self.font.render("Game Over", True, self.black)
+            score_text = self.font.render("Score: " + str(self.score), True, self.black)
+            message_rect = message.get_rect(center=(self.display_width/2, self.display_height/3))
+            score_rect = score_text.get_rect(center=(self.display_width/2, self.display_height/2))
+            self.game_display.blit(message, message_rect)
+            self.game_display.blit(score_text, score_rect)
+
+            # Draw the buttons
+            back_button = pygame.draw.rect(self.game_display, self.black, (100, 450, 200, 50))
+            replay_button = pygame.draw.rect(self.game_display, self.black, (500, 450, 200, 50))
+
+            # Draw the text for the buttons
+            back_text = self.font.render("Back", True, self.white)
+            replay_text = self.font.render("Replay", True, self.white)
+            back_text_rect = back_text.get_rect(center=back_button.center)
+            replay_text_rect = replay_text.get_rect(center=replay_button.center)
+            self.game_display.blit(back_text, back_text_rect)
+            self.game_display.blit(replay_text, replay_text_rect)
+
+            # Check for button clicks
+            mouse_pos = pygame.mouse.get_pos()
+            if back_button.collidepoint(mouse_pos):
+                if pygame.mouse.get_pressed()[0]:
+                    # Handle back button click
+                    print("Back button clicked")
+                    game_over = False
+            if replay_button.collidepoint(mouse_pos):
+                if pygame.mouse.get_pressed()[0]:
+                    # Handle replay button click
+                    print("Replay button clicked")
+                    game_over = False
+
+            # Update the screen
+            pygame.display.update()
