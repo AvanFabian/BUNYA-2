@@ -122,6 +122,19 @@ class Kick:
                     object.direction = random.randint(0, 360)
                     object.speed += 5  # Increase the speed of ball by 5
 
+class Main:
+    def __init__(self):
+        # Initialize Pygame
+        pygame.init()
+
+        # Set up the display
+        self.game_display = pygame.display.set_mode((screenwidth, screenheight))
+
+        # Set the window title
+        pygame.display.set_caption("Bunya: Mari buat senyawa")
+        # Stage background
+        self.background = pygame.image.load("assets/bg_stage.png").convert()
+
         # Set up the game clock
         self.clock = pygame.time.Clock()
 
@@ -141,10 +154,10 @@ class Kick:
         # Create the white balls
         self.white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
-# Add the balls to sprite groups
-all_balls = pygame.sprite.Group()
-all_balls.add(black_balls)
-all_balls.add(white_balls)
+        # Add the balls to sprite groups
+        self.all_balls = pygame.sprite.Group()
+        self.all_balls.add(self.black_balls)
+        self.all_balls.add(self.white_balls)
 
         # Elemenyer
         self.elemenyer1 =  Elemenyer(0, screenheight*0.56, 100, 300, self.all_balls, 1, 3)
