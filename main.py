@@ -266,27 +266,23 @@ class Main:
         #score
         self.score = Score()
 
-        # Character 
+        # Character
         self.character = Character(screenwidth / 2, screenheight / 2)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.character)
 
         # Create the black balls
-        # self.o_balls = pygame.sprite.Group([O(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
-        # self.c_balls = pygame.sprite.Group([C(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
-        # self.h_balls = pygame.sprite.Group([H(random.random() * screenwidth, random.random() * screenheight) for i in range(5)])
-        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight) for i in range(9)]
-        # black_balls = BlackBall(50, 50)
+        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=i) for i in range(9)]
+        # self.o_balls = [O(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
+        # self.c_balls = [C(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
+        # self.h_balls = [H(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
+        # Add the balls to sprite groups
         # Create the white balls
         self.white_balls = [WhiteBall(random.random() * screenwidth, random.random() * screenheight) for i in range(1)]
 
-        # Add the balls to sprite groups
         self.all_balls = pygame.sprite.Group()
-        self.all_balls.add(self.black_balls)
-        # self.all_balls.add(self.o_balls)
-        # self.all_balls.add(self.c_balls)
-        # self.all_balls.add(self.h_balls)
         self.all_balls.add(self.white_balls)
+        self.all_balls.add(self.black_balls)
 
         # Elemenyer
         self.elemenyer1 =  Elemenyer(0, screenheight*0.56, 100, 300, self.all_balls, 1, 3)
