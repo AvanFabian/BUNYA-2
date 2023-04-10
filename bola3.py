@@ -85,7 +85,6 @@ class BlackBall(MainBall):
         # Define the track of the black ball
         self.track_points = [
                         (screenwidth / 2.3, screenheight),
-                        # (screenwidth / 2.3, screenheight/1.2),
                         (screenwidth / 2.3, screenheight/1.35),
                         (screenwidth / 2.0, screenheight/1.7),
                         (screenwidth * 1.6 / 3.0, screenheight / 2.0),
@@ -164,15 +163,15 @@ class BlackBall(MainBall):
                         if self.rect.colliderect(ball.rect):
                             print("Disable can touch track")
                             can_touch_track = False
-                            break
+                            # break
                 if can_touch_track:
                     # print("Enter Can touch track statement")
                     for point in self.track_points:
-                        buffer_rect = pygame.Rect(point[0]-3, point[1]-3, 5, 5)
+                        buffer_rect = pygame.Rect(point[0]-10, point[1]-10, 5, 5)
                         if self.rect.colliderect(buffer_rect):
                             print("Black ball touches the track")
                             self.on_track = True
-                            break
+                            # break
 
     def draw_track(self, screen):
         # Draws the track based on the track points in self.track_points

@@ -270,9 +270,29 @@ class Main:
         self.character = Character(screenwidth / 2, screenheight / 2)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.character)
+        self.track_points = [
+                (screenwidth / 2.3, screenheight),
+                (screenwidth / 2.3, screenheight/1.35),
+                (screenwidth / 2.0, screenheight/1.7),
+                (screenwidth * 1.6 / 3.0, screenheight / 2.0),
+                (screenwidth * 1.7 / 3.0, screenheight / 2.0),
+                (screenwidth * 1.8 / 3.0, screenheight / 2.0),
+                (screenwidth * 1.9 / 3.0, screenheight / 2.0),
+                (screenwidth * 2.0 / 3.0, screenheight / 2.0),
+                (screenwidth * 2.1 / 3.0, screenheight / 2.0),
+                (screenwidth * 2.3 / 3.0, screenheight / 2.0),
+                (screenwidth, screenheight / 2.1)]
 
         # Create the black balls
-        self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=i) for i in range(9)]
+        # self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=i) for i in [9,8,7,6,5,4,3,2,1,0]]
+        # self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=len(self.track_points)-1) for i in range(20)]
+        start_idx = len(self.track_points) - 1
+        group_size = 3
+        self.black_balls = []
+        for i in range(20):
+            start = start_idx - (i // group_size)
+            ball = BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=start)
+            self.black_balls.append(ball)
         # self.o_balls = [O(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
         # self.c_balls = [C(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
         # self.h_balls = [H(random.random() * screenwidth, random.random() * screenheight) for i in range(5)]
