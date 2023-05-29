@@ -1,6 +1,5 @@
 import random
 import math
-import time
 import pygame
 from setting import *
 
@@ -79,7 +78,7 @@ class MainBall(pygame.sprite.Sprite):
 class BlackBall(MainBall):
 
     def __init__(self, x, y, start_idx=0):
-        super().__init__((0, 0, 0), x, y, 25, 5)
+        super().__init__((0, 0, 0), x, y, 15, 4)
         self.start_direction = self.direction
 
         # Define the track of the black ball

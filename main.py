@@ -287,9 +287,9 @@ class Main:
         # self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=i) for i in [9,8,7,6,5,4,3,2,1,0]]
         # self.black_balls = [BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=len(self.track_points)-1) for i in range(20)]
         start_idx = len(self.track_points) - 1
-        group_size = 3
+        group_size = 1
         self.black_balls = []
-        for i in range(20):
+        for i in range(15):
             start = start_idx - (i // group_size)
             ball = BlackBall(random.random() * screenwidth, random.random() * screenheight, start_idx=start)
             self.black_balls.append(ball)
