@@ -179,7 +179,7 @@ class Help:
         self.clock = pygame.time.Clock()
         self.slideshow_images = []
         self.current_image_index = 0
-        self.back_button = Button(520,"Back",WHITE)
+        self.back_button = Button(620,"Back",WHITE)
         # Set the window title
         pygame.display.set_caption("Bunya: Mari buat senyawa")
 
@@ -201,6 +201,9 @@ class Help:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     help_running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        help_running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.current_image_index += 1
                     mouse_pos = pygame.mouse.get_pos()

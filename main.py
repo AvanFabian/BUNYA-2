@@ -1,15 +1,15 @@
 import pygame
 import random
 from setting import *
-from bola3 import BlackBall, WhiteBall, C, O, H
+from bola3 import BlackBall, WhiteBall
 from elemenyer import Elemenyer, Score
 
 
 
 # Define the character sprite class
 class Character(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
+    def _init_(self, x, y):
+        super()._init_()
         self.image = pygame.image.load("assets/charabunya.png").convert_alpha()  # Load the sprite image
         self.rect = self.image.get_rect()  # Use the image's rect as the sprite's rect
         self.rect.center = (x, y)
@@ -111,7 +111,7 @@ class Character(pygame.sprite.Sprite):
 
 # Character kick feature
 class Kick:
-    def __init__(self, character, ball):
+    def _init_(self, character, ball):
         self.character = character
         self.ball = ball
 
@@ -126,8 +126,8 @@ class Kick:
 
 #Lose condition
 class LoseDetector(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, ballarrayinput, num_rows, num_columns):
-        super().__init__()
+    def _init_(self, x, y, width, height, ballarrayinput, num_rows, num_columns):
+        super()._init_()
         self.image = pygame.Surface((width, height))
         self.image.set_alpha(128)
         self.image.fill(RED)
@@ -184,7 +184,7 @@ class LoseDetector(pygame.sprite.Sprite):
     def draw(self, surface):
         pygame.draw.rect(surface, RED, self.rect, 2)
 class EndScreen:
-    def __init__(self, score):
+    def _init_(self, score):
         pygame.init()
 
         self.game_display = pygame.display.set_mode((screenwidth, screenheight))
@@ -248,7 +248,7 @@ class EndScreen:
             pygame.display.update()
 
 class Main:
-    def __init__(self):
+    def _init_(self):
         # Initialize Pygame
         pygame.init()
 
@@ -324,6 +324,9 @@ class Main:
                 # event when quit pressed
                 if event.type == pygame.QUIT:
                     main_run = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        main_run = False
                 # event when button pressed
                 elif event:
                     self.character.handle_event(event)            
